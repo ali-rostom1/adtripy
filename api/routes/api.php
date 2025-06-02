@@ -1,13 +1,28 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use Illuminate\Support\Facades\Storage;
 
 
 
- 
-Route::get("/", function () {
-    return response()->json(['message' => 'test'],201);
+// testing s3 upload
+Route::post("/test-s3", function (Request $request) {
+    try{
+        Storage::disk('s3')->put('randomVideo.mp4',$request->file('video')->get());
+        return response()->json([
+            'status' => 'success',
+            'message' => 'File uploaded successfully',
+            'file_path' => Storage::disk('s3')->url('randomVideo.mp4')
+        ]);
+    }catch(\Exception $e){
+        return response()->json([
+            'status' => 'error',
+            'message' => 'An error occurred',
+            'error' => $e->getMessage()
+        ], 500);
+    }
 });
 
 Route::post('/login', [AuthController::class, 'login']);
