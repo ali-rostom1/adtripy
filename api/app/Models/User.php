@@ -19,9 +19,19 @@ class User extends Authenticatable implements JWTSubject
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'firstName',
+        'lastName',
         'email',
         'password',
+        'phone',
+        'birth_date',
+        'age',
+        'city',
+        'country',
+        'last_seen_at',
+        'pfp_path',
+        'email_verified_at',
+        'phone_verified_at',
     ];
     protected $keyType = 'string';
     public $incrementing = false;
@@ -53,7 +63,8 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'phone_verified_at' => 'datetime',
+            'last_seen_at' => 'datetime',
         ];
     }
 }
