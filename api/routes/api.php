@@ -31,3 +31,12 @@ Route::post('/refresh',[AuthController::class,'refresh']);
 
 Route::post('/send-code',[AuthController::class,'sendVerificationCode'])->middleware('auth');
 Route::post('/verify-phone',[AuthController::class,'verifyPhone'])->middleware('auth');
+
+
+// Email verification routes
+Route::post('/email/verification-notification', [AuthController::class, 'sendVerificationEmail'])
+    ->middleware('auth:api')
+    ->name('verification.send');
+    
+Route::get('/verify-email/{token}', [AuthController::class, 'verify'])
+    ->name('verification.verify');
