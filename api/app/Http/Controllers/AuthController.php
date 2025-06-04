@@ -96,6 +96,9 @@ class AuthController extends Controller
             $user->email_verified_at = now();
             $user->save();
         }
+        if($user->phone_verified_at) {
+            $user->syncRoles(['verified-guest']);
+        }
 
         // Remove token from cache
         Cache::forget('email_verify_' . $token);
@@ -167,6 +170,9 @@ class AuthController extends Controller
             $user->phone_verified_at = now();
             $user->save();
 
+            if($user->email_verified_at){
+                $user->syncRoles(['verified-guest']);
+            }
             Cache::forget('verify_' . $request->phone);
             return response()->json(['status' => 'success', 'message' => 'Phone verified successfully.']);
         }
@@ -191,7 +197,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone ?? null,
             ]);
-
+            $user->syncRoles(['unverified-guest']);
             $guest = Guest::create([
                 'id' => (string) Str::uuid(),
                 'user_id' => $user->id,
