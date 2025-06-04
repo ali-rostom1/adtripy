@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\VerifyEmail;
+use App\Models\Guest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -189,7 +190,11 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone ?? null,
-                // Include other fields as needed
+            ]);
+
+            $guest = Guest::create([
+                'id' => (string) Str::uuid(),
+                'user_id' => $user->id,
             ]);
 
             // Generate access token
