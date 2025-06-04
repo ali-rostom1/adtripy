@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\VerifyEmail;
+use App\Models\Guest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -95,6 +96,13 @@ class AuthController extends Controller
             $user->email_verified_at = now();
             $user->save();
         }
+        if($user->phone_verified_at) {
+            if($user->hasRole('unverified-guest')) {
+                $user->syncRoles(['verified-guest']);
+            } else if($user->hasRole('unverified-host')) {
+                $user->syncRoles(['verified-host']);
+            }
+        }
 
         // Remove token from cache
         Cache::forget('email_verify_' . $token);
@@ -166,6 +174,13 @@ class AuthController extends Controller
             $user->phone_verified_at = now();
             $user->save();
 
+            if($user->email_verified_at){
+                if($user->hasRole('unverified-guest')) {
+                    $user->syncRoles(['verified-guest']);
+                } else if($user->hasRole('unverified-host')) {
+                    $user->syncRoles(['verified-host']);
+                }
+            }
             Cache::forget('verify_' . $request->phone);
             return response()->json(['status' => 'success', 'message' => 'Phone verified successfully.']);
         }
@@ -189,7 +204,11 @@ class AuthController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone ?? null,
-                // Include other fields as needed
+            ]);
+            $user->syncRoles(['unverified-guest']);
+            $guest = Guest::create([
+                'id' => (string) Str::uuid(),
+                'user_id' => $user->id,
             ]);
 
             // Generate access token
