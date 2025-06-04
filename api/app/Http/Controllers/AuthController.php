@@ -97,7 +97,11 @@ class AuthController extends Controller
             $user->save();
         }
         if($user->phone_verified_at) {
-            $user->syncRoles(['verified-guest']);
+            if($user->hasRole('unverified-guest')) {
+                $user->syncRoles(['verified-guest']);
+            } else if($user->hasRole('unverified-host')) {
+                $user->syncRoles(['verified-host']);
+            }
         }
 
         // Remove token from cache
@@ -171,7 +175,11 @@ class AuthController extends Controller
             $user->save();
 
             if($user->email_verified_at){
-                $user->syncRoles(['verified-guest']);
+                if($user->hasRole('unverified-guest')) {
+                    $user->syncRoles(['verified-guest']);
+                } else if($user->hasRole('unverified-host')) {
+                    $user->syncRoles(['verified-host']);
+                }
             }
             Cache::forget('verify_' . $request->phone);
             return response()->json(['status' => 'success', 'message' => 'Phone verified successfully.']);
