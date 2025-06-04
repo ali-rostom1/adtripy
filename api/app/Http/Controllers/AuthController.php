@@ -198,6 +198,7 @@ class AuthController extends Controller
                 'phone' => $request->phone ?? null,
             ]);
             $user->syncRoles(['unverified-guest']);
+
             $guest = Guest::create([
                 'id' => (string) Str::uuid(),
                 'user_id' => $user->id,
