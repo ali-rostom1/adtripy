@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
+
 class PasswordResetController extends Controller
 {
     /**
@@ -113,3 +114,4 @@ class PasswordResetController extends Controller
         }
     }
 }
+
