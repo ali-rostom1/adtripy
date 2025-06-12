@@ -32,7 +32,7 @@ export default function RegisterScreen() {
       });
       Alert.alert('Success', 'Registration successful! Please login.');
       router.replace('/(auth)/login');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Registration failed:', error.response?.data || error.message);
       const errors = error.response?.data?.errors;
       let errorMessage = error.response?.data?.message || 'An unexpected error occurred. Please try again.';

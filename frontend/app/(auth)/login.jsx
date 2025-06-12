@@ -24,7 +24,7 @@ export default function LoginScreen() {
       const { user, access_token, refresh_token } = response.data;
       login(user, { accessToken: access_token, refreshToken: refresh_token });
       router.replace('/(tabs)'); // Navigate to home screen after login
-    } catch (error: any) {
+    } catch (error) {
       console.error('Login failed:', error.response?.data || error.message);
       Alert.alert('Login Failed', error.response?.data?.message || 'An unexpected error occurred. Please try again.');
     }
