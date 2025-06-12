@@ -9,9 +9,9 @@ const apiClient = axios.create({
 });
 
 let isRefreshing = false;
-let failedQueue: { resolve: (value?: any) => void; reject: (reason?: any) => void }[] = [];
+let failedQueue= [];
 
-const processQueue = (error: AxiosError | null, token: string | null = null) => {
+const processQueue = (error, token) => {
   failedQueue.forEach(prom => {
     if (error) {
       prom.reject(error);
@@ -24,14 +24,14 @@ const processQueue = (error: AxiosError | null, token: string | null = null) => 
 
 // Request Interceptor
 apiClient.interceptors.request.use(
-  (config: InternalAxiosRequestConfig) => {
+  (config) => {
     const { accessToken } = useAuthStore.getState();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
     return config;
   },
-  (error: AxiosError) => {
+  (error) => {
     return Promise.reject(error);
   }
 );
@@ -41,8 +41,8 @@ apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
-  async (error: AxiosError) => {
-    const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+  async (error) => {
+    const originalRequest = error.config  & { _retry };
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -100,7 +100,7 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         console.error('Failed to refresh token:', refreshError);
         logout(); // Logout if refresh fails
-        processQueue(refreshError as AxiosError, null);
+        processQueue(refreshError , null);
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
