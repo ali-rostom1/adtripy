@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../../src/context/AuthContext';
+import useAuthStore from '../../src/store/useAuthStore';
 import { useRouter } from 'expo-router';
 
 export default function LoginScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  
+  // Use Zustand store instead of Context
+  const { login, loading } = useAuthStore();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -16,15 +17,12 @@ export default function LoginScreen() {
       return;
     }
     
-    setLoading(true);
     try {
       await login(email, password);
       // Navigate to home page after successful login
       router.replace('/');
     } catch (error) {
       Alert.alert('Login Failed', error.message || 'An error occurred during login');
-    } finally {
-      setLoading(false);
     }
   };
 

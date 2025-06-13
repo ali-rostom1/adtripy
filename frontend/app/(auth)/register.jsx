@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
-import { useAuth } from '../../src/context/AuthContext';
+import useAuthStore from '../../src/store/useAuthStore';
 import { useRouter } from 'expo-router';
 
 export default function RegisterScreen() {
@@ -10,10 +10,10 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState('guest'); // 'guest' or 'host'
-
-  const { register } = useAuth();
+  
+  // Replace Context with Zustand
+  const { register, loading } = useAuthStore();
 
   const handleRegister = async () => {
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -26,7 +26,6 @@ export default function RegisterScreen() {
       return;
     }
 
-    setLoading(true);
     try {
       await register(firstName, lastName, email, password, confirmPassword, userType);
       Alert.alert(
@@ -36,8 +35,6 @@ export default function RegisterScreen() {
       );
     } catch (error) {
       Alert.alert('Registration Failed', error.message || 'An error occurred during registration');
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -51,13 +48,13 @@ export default function RegisterScreen() {
             style={[styles.userTypeButton, userType === 'guest' && styles.selectedUserType]}
             onPress={() => setUserType('guest')}
           >
-            <Text style={styles.userTypeText}>Guest</Text>
+            <Text style={[styles.userTypeText, userType === 'guest' && styles.selectedUserTypeText]}>Guest</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={[styles.userTypeButton, userType === 'host' && styles.selectedUserType]}
             onPress={() => setUserType('host')}
           >
-            <Text style={styles.userTypeText}>Host</Text>
+            <Text style={[styles.userTypeText, userType === 'host' && styles.selectedUserTypeText]}>Host</Text>
           </TouchableOpacity>
         </View>
         
@@ -146,6 +143,9 @@ const styles = StyleSheet.create({
   },
   userTypeText: {
     fontWeight: 'bold',
+  },
+  selectedUserTypeText: {
+    color: 'white',
   },
   input: {
     height: 50,

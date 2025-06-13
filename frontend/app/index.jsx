@@ -1,9 +1,14 @@
+// filepath: c:\laragon\www\adtripy\frontend\app\index.jsx
 import { Redirect } from 'expo-router';
-import { useAuth } from '../src/context/AuthContext';
-import { View, ActivityIndicator } from 'react-native';
+import useAuthStore from '../src/store/useAuthStore';
+import { View, ActivityIndicator, useEffect } from 'react-native';
 
 export default function Index() {
-  const { isLoggedIn, loading } = useAuth();
+  const { isLoggedIn, loading, checkAuth } = useAuthStore();
+  
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   if (loading) {
     return (

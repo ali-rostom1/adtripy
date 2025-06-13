@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { forgotPassword } from '../../src/services/authService';
+import useAuthStore from '../../src/store/useAuthStore';
 
 export default function ForgotPasswordScreen() {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
+  
+  // Use the forgotPassword function from Zustand store
+  const { forgotPassword, loading } = useAuthStore();
 
   const handleSubmit = async () => {
     if (!email) {
@@ -14,7 +16,6 @@ export default function ForgotPasswordScreen() {
       return;
     }
 
-    setLoading(true);
     try {
       await forgotPassword(email);
       Alert.alert(
@@ -24,8 +25,6 @@ export default function ForgotPasswordScreen() {
       );
     } catch (error) {
       Alert.alert('Error', error.message || 'Could not send reset link');
-    } finally {
-      setLoading(false);
     }
   };
 
