@@ -19,6 +19,12 @@ expo-env.d.ts
 *.mobileprovision
 
 # Metro
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
 .metro-health-check*
 
 # debug
