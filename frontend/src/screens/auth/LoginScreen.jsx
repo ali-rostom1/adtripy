@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useAuth } from '../../src/context/AuthContext';
-import { useRouter } from 'expo-router';
+import { useAuth } from '../../context/AuthContext';
 
-export default function LoginScreen() {
-  const router = useRouter();
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,8 +17,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email, password);
-      // Navigate to home page after successful login
-      router.replace('/');
+      // Navigation is handled by your routing system
     } catch (error) {
       Alert.alert('Login Failed', error.message || 'An error occurred during login');
     } finally {
@@ -58,11 +55,11 @@ export default function LoginScreen() {
       </TouchableOpacity>
       
       <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => router.push('/register')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Register')}>
           <Text style={styles.link}>Dont have an account? Register</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={styles.link}>Forgot Password?</Text>
         </TouchableOpacity>
       </View>
@@ -112,4 +109,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
+export default LoginScreen;
