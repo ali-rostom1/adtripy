@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { login } from "../../api/auth";
-import { useAuthStore } from "../../features/auth/useAuthStore";
+import { useAuthStore } from "../../store/AuthStore";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -25,9 +25,9 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-black">
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-red-500">Login</h2>
         {error && <div className="mb-4 text-red-500">{error}</div>}
         <input
           className="w-full mb-4 p-2 border rounded"
