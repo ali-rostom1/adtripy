@@ -47,40 +47,65 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex bg-gray-50">
       {/* Left side - Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 bg-slate-900 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden rounded-r-full">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img src="/src/assets/img/bggreen.jpg" alt="Register Background" className="w-full h-full object-cover" />
+        </div>
+
+        <div className="absolute inset-0 bg-black/20">
           {/* Decorative elements */}
           <div className="absolute top-20 left-20 w-4 h-4 bg-white rounded-full opacity-60"></div>
           <div className="absolute top-32 left-32 w-2 h-2 bg-white rounded-full opacity-40"></div>
           <div className="absolute bottom-40 right-20 w-6 h-6 bg-teal-400 rounded-full opacity-70"></div>
           <div className="absolute bottom-60 right-40 w-3 h-3 bg-teal-300 rounded-full opacity-50"></div>
 
-          {/* Illustration area */}
-          <div className="flex-1 flex items-center justify-center px-12">
-            <div className="text-center">
-              {/* Computer/Screen illustration */}
-              <div className="relative mb-8">
-                <div className="bg-teal-500 w-32 h-24 rounded-lg transform rotate-12 opacity-80"></div>
-                <div className="absolute -top-4 -left-4 bg-gray-200 w-32 h-24 rounded-lg border-4 border-teal-600">
-                  <div className="bg-slate-800 w-full h-4 rounded-t-md"></div>
-                  <div className="p-3 flex items-center justify-center">
-                    <User className="w-8 h-8 text-teal-600" />
+          {/* Content area */}
+          <div className="flex flex-col gap-4 h-full p-12">
+            {/* Top section - Logo */}
+            <div className="flex-shrink-0">
+              <img src="/src/assets/img/whiteLogo.png" alt="ADTRIPY Logo" className="w-[200px]" />
+            </div>
+
+            {/* Bottom section - Description */}
+            <div className="flex-shrink-0 bg-black/30 border border-white p-4 max-w-lg">
+              <p className="text-white text-7xl font-light">Join our community today.</p>
+            </div>
+
+            {/* Bottom section - Description */}
+            <div className="flex-shrink-0 p-4 max-w-lg">
+              <p className="text-white text-2xl font-light">
+                Create an account to unlock exclusive deals, faster bookings, and personalized travel inspiration.
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 mt-4 max-w-lg">
+              <div className="border-t border-white pt-6">
+                <p className="text-white text-sm font-light uppercase tracking-widest mb-4 text-center">
+                  Trusted Partners
+                </p>
+
+                <div className="grid grid-cols-4 gap-6 items-center justify-items-center">
+                  {/* Sponsor logos - replace with actual logo paths */}
+                  <div className="h-8 w-16 bg-black/30 rounded flex items-center justify-center">
+                    <span className="text-white text-sm font-light">HOTEL</span>
+                  </div>
+
+                  <div className="h-8 w-16 bg-black/30 rounded flex items-center justify-center">
+                    <span className="text-white text-sm font-light">RIAD</span>
+                  </div>
+
+                  <div className="h-8 w-16 bg-black/30 rounded flex items-center justify-center">
+                    <span className="text-white text-sm font-light">TOURS</span>
+                  </div>
+
+                  <div className="h-8 w-16 bg-black/30 rounded flex items-center justify-center">
+                    <span className="text-white text-sm font-light">TRAVEL</span>
                   </div>
                 </div>
               </div>
-
-              {/* Person figure */}
-              <div className="relative">
-                <div className="bg-teal-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <User className="w-8 h-8 text-white" />
-                </div>
-                <div className="bg-teal-600 w-12 h-8 rounded-t-full mx-auto"></div>
-              </div>
-
-              <h2 className="text-white text-2xl font-bold mt-8">Welcome to AdTripy</h2>
-              <p className="text-gray-300 mt-2">Create your account and start your journey</p>
             </div>
           </div>
         </div>
@@ -90,10 +115,12 @@ export default function Register() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold text-gray-900">Create Account</h1>
+            <div className="flex justify-center">
+              <img src="/src/assets/img/logoAdtripy.png" alt="ADTRIPY Logo" className="w-[250px] h-full object-cover" />
+            </div>
             <p className="text-gray-600">
               Already have an account?{" "}
-              <Link to="/login" className="text-blue-600 hover:text-blue-700 font-medium">
+              <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">
                 Sign in here
               </Link>
             </p>
@@ -252,7 +279,7 @@ export default function Register() {
                 loading ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {loading ? "Registering..." : "Register as Guest"}
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
 
             {/* Divider */}
