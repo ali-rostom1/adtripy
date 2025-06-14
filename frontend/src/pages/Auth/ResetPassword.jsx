@@ -1,22 +1,35 @@
-import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useAuthStore } from "../../store/AuthStore";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation, Link } from "react-router-dom";
+import { resetPassword } from "../../api/auth";
 
-export default function Register() {
+export default function ResetPassword() {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
     email: "",
     password: "",
     password_confirmation: "",
-    phone: ""
+    token: ""
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
-  const register = useAuthStore((state) => state.register);
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Extract token and email from URL query params
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const token = queryParams.get("token");
+    const email = queryParams.get("email");
+    
+    if (token && email) {
+      setFormData(prev => ({
+        ...prev,
+        token,
+        email
+      }));
+    }
+  }, [location]);
   
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,14 +43,13 @@ export default function Register() {
     setLoading(true);
     
     try {
-      const response = await register(formData);
-      setSuccess("Registration successful! Please check your email to verify your account.");
+      await resetPassword(formData);
+      setSuccess("Password has been reset successfully!");
       setTimeout(() => {
         navigate("/login");
       }, 3000);
     } catch (err) {
-      console.error("Registration error:", err);
-      setError(err.response?.data?.message || "Registration failed");
+      setError(err.response?.data?.message || "Failed to reset password");
     } finally {
       setLoading(false);
     }
@@ -46,7 +58,7 @@ export default function Register() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="bg-white p-8 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Create Guest Account</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Reset Password</h2>
         
         {error && (
           <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -61,37 +73,6 @@ export default function Register() {
         )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="firstName">
-                First Name
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="firstName"
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="lastName">
-                Last Name
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="lastName"
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                required
-              />
-            </div>
-          </div>
-          
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
               Email
@@ -104,27 +85,13 @@ export default function Register() {
               value={formData.email}
               onChange={handleChange}
               required
-            />
-          </div>
-          
-          <div>
-            <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phone">
-              Phone (Optional)
-            </label>
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="phone"
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+1234567890"
+              readOnly={!!formData.email}
             />
           </div>
           
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-              Password
+              New Password
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -140,7 +107,7 @@ export default function Register() {
           
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password_confirmation">
-              Confirm Password
+              Confirm New Password
             </label>
             <input
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -154,20 +121,21 @@ export default function Register() {
             />
           </div>
           
+          <input type="hidden" name="token" value={formData.token} />
+          
           <button
             type="submit"
             className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
             disabled={loading}
           >
-            {loading ? "Registering..." : "Register as Guest"}
+            {loading ? "Resetting..." : "Reset Password"}
           </button>
         </form>
         
         <div className="mt-6 text-center">
           <p className="text-gray-600">
-            Already have an account?{" "}
             <Link to="/login" className="text-blue-600 hover:text-blue-800">
-              Login
+              Back to Login
             </Link>
           </p>
         </div>
