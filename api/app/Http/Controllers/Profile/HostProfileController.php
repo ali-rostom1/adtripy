@@ -24,4 +24,41 @@ class HostProfileController extends Controller
             ], 500);
         }
     }
+    public function show(String $id){
+        try{
+            $host = Host::with(['user' => function($query) {
+                $query->select([
+                    'id',
+                    'firstName', 
+                    'lastName',
+                    'city',
+                    'country',
+                    'pfp_path',
+                    'created_at' // Join date/member since
+                ]);
+            }])->where('user_id', $id)->first();
+            
+            if(!$host){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Host not found'
+                ], 404);
+            }
+
+            if ($host && $host->user) {
+                $host->user->append('age');
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $host
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Could not retrieve host profile',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
