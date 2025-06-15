@@ -1,245 +1,502 @@
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import {
-  Navbar,
-  Collapse,
-  Typography,
-  Button,
-  IconButton,
-  List,
-  ListItem,
+  ChevronDown,
+  Search,
   Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-} from "@material-tailwind/react";
-import {
-  ChevronDownIcon,
-  Bars3Icon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import {
-  Bars4Icon,
-  GlobeAmericasIcon,
-  NewspaperIcon,
-  PhoneIcon,
-  RectangleGroupIcon,
-  SquaresPlusIcon,
-  SunIcon,
-  TagIcon,
-  UserGroupIcon,
-} from "@heroicons/react/24/solid";
- 
-const navListMenuItems = [
-  {
-    title: "Products",
-    description: "Find the perfect solution for your needs.",
-    icon: SquaresPlusIcon,
-  },
-  {
-    title: "About Us",
-    description: "Meet and learn about our dedication",
-    icon: UserGroupIcon,
-  },
-  {
-    title: "Blog",
-    description: "Find the perfect solution for your needs.",
-    icon: Bars4Icon,
-  },
-  {
-    title: "Services",
-    description: "Learn how we can help you achieve your goals.",
-    icon: SunIcon,
-  },
-  {
-    title: "Support",
-    description: "Reach out to us for assistance or inquiries",
-    icon: GlobeAmericasIcon,
-  },
-  {
-    title: "Contact",
-    description: "Find the perfect solution for your needs.",
-    icon: PhoneIcon,
-  },
-  {
-    title: "News",
-    description: "Read insightful articles, tips, and expert opinions.",
-    icon: NewspaperIcon,
-  },
-  {
-    title: "Products",
-    description: "Find the perfect solution for your needs.",
-    icon: RectangleGroupIcon,
-  },
-  {
-    title: "Special Offers",
-    description: "Explore limited-time deals and bundles",
-    icon: TagIcon,
-  },
-];
- 
-function NavListMenu() {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const renderItems = navListMenuItems.map(
-    ({ icon, title, description }, key) => (
-      <a href="#" key={key}>
-        <MenuItem className="flex items-center gap-3 rounded-lg">
-          <div className="flex items-center justify-center rounded-lg !bg-blue-gray-50 p-2 ">
-            {" "}
-            {React.createElement(icon, {
-              strokeWidth: 2,
-              className: "h-6 text-gray-900 w-6",
-            })}
-          </div>
-          <div>
-            <Typography
-              variant="h6"
-              color="blue-gray"
-              className="flex items-center text-sm font-bold"
-            >
-              {title}
-            </Typography>
-            <Typography
-              variant="paragraph"
-              className="text-xs !font-medium text-blue-gray-500"
-            >
-              {description}
-            </Typography>
-          </div>
-        </MenuItem>
-      </a>
-    ),
-  );
- 
-  return (
-    <React.Fragment>
-      <Menu
-        open={isMenuOpen}
-        handler={setIsMenuOpen}
-        offset={{ mainAxis: 20 }}
-        placement="bottom"
-        allowHover={true}
-      >
-        <MenuHandler>
-          <Typography as="div" variant="small" className="font-medium">
-            <ListItem
-              className="flex items-center gap-2 py-2 pr-4 font-medium text-gray-900"
-              selected={isMenuOpen || isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen((cur) => !cur)}
-            >
-              Resources
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`hidden h-3 w-3 transition-transform lg:block ${
-                  isMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-              <ChevronDownIcon
-                strokeWidth={2.5}
-                className={`block h-3 w-3 transition-transform lg:hidden ${
-                  isMobileMenuOpen ? "rotate-180" : ""
-                }`}
-              />
-            </ListItem>
-          </Typography>
-        </MenuHandler>
-        <MenuList className="hidden max-w-screen-xl rounded-xl lg:block">
-          <ul className="grid grid-cols-3 gap-y-2 outline-none outline-0">
-            {renderItems}
-          </ul>
-        </MenuList>
-      </Menu>
-      <div className="block lg:hidden">
-        <Collapse open={isMobileMenuOpen}>{renderItems}</Collapse>
-      </div>
-    </React.Fragment>
-  );
-}
- 
-function NavList() {
-  return (
-    <List className="mt-4 mb-6 p-0 lg:mt-0 lg:mb-0 lg:flex-row lg:p-1">
-      <Typography
-        as="a"
-        href="#"
-        variant="small"
-        color="blue-gray"
-        className="font-medium"
-      >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">Home</ListItem>
-      </Typography>
-      <NavListMenu />
-      <Typography
-        as="a"
-        href="#"
-        variant="small"
-        color="blue-gray"
-        className="font-medium"
-      >
-        <ListItem className="flex items-center gap-2 py-2 pr-4">
-          Contact Us
-        </ListItem>
-      </Typography>
-    </List>
-  );
-}
- 
-export function NavbarWithMegaMenu() {
-  const [openNav, setOpenNav] = React.useState(false);
- 
-  React.useEffect(() => {
-    window.addEventListener(
-      "resize",
-      () => window.innerWidth >= 960 && setOpenNav(false),
-    );
+  User,
+  Globe,
+  Calendar,
+  MapPin,
+  Car,
+  Home,
+  Compass,
+  Phone,
+  Heart,
+  Settings,
+  X,
+} from "lucide-react";
+
+const BookingNavbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isVisible, setIsVisible] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // Add glass effect when scrolled
+      setIsScrolled(currentScrollY > 50);
+
+      // Hide/show navbar on scroll
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
- 
-  return (
-    <Navbar className="mx-auto max-w-screen-xl px-4 py-2">
-      <div className="flex items-center justify-between text-blue-gray-900">
-        <Typography
-          as="a"
-          href="#"
-          variant="h6"
-          className="mr-4 cursor-pointer py-1.5 lg:ml-2"
-        >
-          Material Tailwind
-        </Typography>
-        <div className="hidden lg:block">
-          <NavList />
+
+  const toggleDropdown = (dropdownName) => {
+    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+  };
+
+  const DropdownMenu = ({ trigger, children, isOpen, onToggle }) => (
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={onToggle}
+        className={`flex items-center px-3 py-2 rounded-lg font-medium transition-all duration-300 ${
+          isScrolled
+            ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+            : "text-white/90 hover:text-white hover:bg-white/10"
+        }`}
+      >
+        {trigger}
+      </button>
+      {isOpen && (
+        <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+          {children}
         </div>
-        <div className="hidden gap-2 lg:flex">
-          <Button variant="text" size="sm" color="blue-gray">
-            Log In
-          </Button>
-          <Button variant="gradient" size="sm">
-            Sign In
-          </Button>
-        </div>
-        <IconButton
-          variant="text"
-          color="blue-gray"
-          className="lg:hidden"
-          onClick={() => setOpenNav(!openNav)}
-        >
-          {openNav ? (
-            <XMarkIcon className="h-6 w-6" strokeWidth={2} />
-          ) : (
-            <Bars3Icon className="h-6 w-6" strokeWidth={2} />
-          )}
-        </IconButton>
-      </div>
-      <Collapse open={openNav}>
-        <NavList />
-        <div className="flex w-full flex-nowrap items-center gap-2 lg:hidden">
-          <Button variant="outlined" size="sm" color="blue-gray" fullWidth>
-            Log In
-          </Button>
-          <Button variant="gradient" size="sm" fullWidth>
-            Sign In
-          </Button>
-        </div>
-      </Collapse>
-    </Navbar>
+      )}
+    </div>
   );
-}
+
+  const DropdownItem = ({ href, children, icon: Icon }) => (
+    <a
+      href={href}
+      className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
+      onClick={() => setOpenDropdown(null)}
+    >
+      {Icon && <Icon className="w-4 h-4 mr-3" />}
+      {children}
+    </a>
+  );
+
+  const DropdownLabel = ({ children }) => (
+    <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider border-b border-gray-100 mb-1">
+      {children}
+    </div>
+  );
+
+  const DropdownSeparator = () => (
+    <div className="border-t border-gray-100 my-1" />
+  );
+
+  return (
+    <>
+      <nav
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md shadow-lg py-2"
+            : "bg-transparent py-4"
+        } ${isVisible ? "translate-y-0" : "-translate-y-full"}`}
+      >
+        <div className="max-w-7xl mx-auto px-4 pt-2 pb-2 sm:px-6 lg:px-1">
+          <div className="flex justify-between items-center">
+            {/* Logo */}
+            <a href="" className="flex items-center space-x-2">
+              <img
+                src={
+                  isScrolled
+                    ? "/src/assets/img/logoAdtripy.png"
+                    : "/src/assets/img/whiteLogo.png"
+                }
+                alt="LuxeStay Logo"
+                className="w-[140px] transition-all duration-300"
+              />
+            </a>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center space-x-1">
+              {/* Accommodation Dropdown */}
+              <DropdownMenu
+                trigger={
+                  <>
+                    <Home className="w-4 h-4 mr-2" />
+                    Accommodation
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </>
+                }
+                isOpen={openDropdown === "accommodation"}
+                onToggle={() => toggleDropdown("accommodation")}
+              >
+                <DropdownLabel>Stay Types</DropdownLabel>
+                <DropdownItem href="/hotels">Hotels & Resorts</DropdownItem>
+                <DropdownItem href="/apartments">
+                  Apartments & Condos
+                </DropdownItem>
+                <DropdownItem href="/villas">Villas & Houses</DropdownItem>
+                <DropdownItem href="/unique">Unique Stays</DropdownItem>
+                <DropdownSeparator />
+                <DropdownItem href="/luxury">Luxury Collection</DropdownItem>
+              </DropdownMenu>
+
+              {/* Car Rental Dropdown */}
+              <DropdownMenu
+                trigger={
+                  <>
+                    <Car className="w-4 h-4 mr-2" />
+                    Car Rental
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </>
+                }
+                isOpen={openDropdown === "cars"}
+                onToggle={() => toggleDropdown("cars")}
+              >
+                <DropdownLabel>Vehicle Types</DropdownLabel>
+                <DropdownItem href="/cars/economy">Economy Cars</DropdownItem>
+                <DropdownItem href="/cars/luxury">Luxury Vehicles</DropdownItem>
+                <DropdownItem href="/cars/suv">SUVs & Trucks</DropdownItem>
+                <DropdownItem href="/cars/electric">
+                  Electric Vehicles
+                </DropdownItem>
+                <DropdownSeparator />
+                <DropdownItem href="/cars/long-term">
+                  Long-term Rentals
+                </DropdownItem>
+              </DropdownMenu>
+
+              {/* Experiences Dropdown */}
+              <DropdownMenu
+                trigger={
+                  <>
+                    <Compass className="w-4 h-4 mr-2" />
+                    Experiences
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </>
+                }
+                isOpen={openDropdown === "experiences"}
+                onToggle={() => toggleDropdown("experiences")}
+              >
+                <DropdownLabel>Activity Types</DropdownLabel>
+                <DropdownItem href="/experiences/tours">
+                  Guided Tours
+                </DropdownItem>
+                <DropdownItem href="/experiences/adventure">
+                  Adventure Sports
+                </DropdownItem>
+                <DropdownItem href="/experiences/cultural">
+                  Cultural Experiences
+                </DropdownItem>
+                <DropdownItem href="/experiences/food">
+                  Food & Wine
+                </DropdownItem>
+                <DropdownSeparator />
+                <DropdownItem href="/experiences/premium">
+                  Premium Experiences
+                </DropdownItem>
+              </DropdownMenu>
+
+              {/* Destinations Dropdown */}
+              <DropdownMenu
+                trigger={
+                  <>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Destinations
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </>
+                }
+                isOpen={openDropdown === "destinations"}
+                onToggle={() => toggleDropdown("destinations")}
+              >
+                <DropdownLabel>Popular Destinations</DropdownLabel>
+                <DropdownItem href="/destinations/europe">Europe</DropdownItem>
+                <DropdownItem href="/destinations/asia">Asia</DropdownItem>
+                <DropdownItem href="/destinations/americas">
+                  Americas
+                </DropdownItem>
+                <DropdownItem href="/destinations/africa">Africa</DropdownItem>
+                <DropdownSeparator />
+                <DropdownItem href="/destinations/trending">
+                  Trending Now
+                </DropdownItem>
+              </DropdownMenu>
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="hidden lg:flex items-center space-x-3">
+              {/* Search */}
+              <button
+                className={`p-2 rounded-lg transition-all duration-300 ${
+                  isScrolled
+                    ? "text-gray-700 hover:text-gray-900 hover:bg-gray-100"
+                    : "text-white/90 hover:text-white hover:bg-white/10"
+                }`}
+              >
+                <Search className="w-4 h-4" />
+              </button>
+
+              {/* Language/Currency */}
+              <DropdownMenu
+                trigger={<Globe className="w-4 h-4" />}
+                isOpen={openDropdown === "language"}
+                onToggle={() => toggleDropdown("language")}
+              >
+                <DropdownLabel>Language & Currency</DropdownLabel>
+                <DropdownItem href="#">English (USD)</DropdownItem>
+                <DropdownItem href="#">Français (EUR)</DropdownItem>
+                <DropdownItem href="#">Español (EUR)</DropdownItem>
+                <DropdownItem href="#">Deutsch (EUR)</DropdownItem>
+              </DropdownMenu>
+
+              {/* User Account */}
+              <DropdownMenu
+                trigger={
+                  <>
+                    <User className="w-4 h-4 mr-2" />
+                    Account
+                    <ChevronDown className="w-4 h-4 ml-1" />
+                  </>
+                }
+                isOpen={openDropdown === "account"}
+                onToggle={() => toggleDropdown("account")}
+              >
+                <DropdownItem href="/signin">Sign In</DropdownItem>
+                <DropdownItem href="/signup">Create Account</DropdownItem>
+                <DropdownSeparator />
+                <DropdownItem href="/bookings" icon={Calendar}>
+                  My Bookings
+                </DropdownItem>
+                <DropdownItem href="/favorites" icon={Heart}>
+                  Favorites
+                </DropdownItem>
+                <DropdownItem href="/profile" icon={Settings}>
+                  Profile Settings
+                </DropdownItem>
+              </DropdownMenu>
+
+              {/* CTA Button */}
+              <button className="bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                Book Now
+              </button>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className={`lg:hidden p-2 rounded-lg transition-colors duration-300 ${
+                isScrolled
+                  ? "text-gray-700 hover:bg-gray-100"
+                  : "text-white hover:bg-white/10"
+              }`}
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-xl transform transition-transform duration-300">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
+              <button
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="p-4 space-y-6 overflow-y-auto h-full pb-20">
+              {/* Search */}
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="Search destinations..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+
+              {/* Navigation Sections */}
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <Home className="w-4 h-4 mr-2" />
+                    Accommodation
+                  </h3>
+                  <div className="space-y-2 ml-6">
+                    <a
+                      href="/hotels"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Hotels & Resorts
+                    </a>
+                    <a
+                      href="/apartments"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Apartments
+                    </a>
+                    <a
+                      href="/villas"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Villas & Houses
+                    </a>
+                    <a
+                      href="/unique"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Unique Stays
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <Car className="w-4 h-4 mr-2" />
+                    Car Rental
+                  </h3>
+                  <div className="space-y-2 ml-6">
+                    <a
+                      href="/cars/economy"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Economy Cars
+                    </a>
+                    <a
+                      href="/cars/luxury"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Luxury Vehicles
+                    </a>
+                    <a
+                      href="/cars/suv"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      SUVs & Trucks
+                    </a>
+                    <a
+                      href="/cars/electric"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Electric Vehicles
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <Compass className="w-4 h-4 mr-2" />
+                    Experiences
+                  </h3>
+                  <div className="space-y-2 ml-6">
+                    <a
+                      href="/experiences/tours"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Guided Tours
+                    </a>
+                    <a
+                      href="/experiences/adventure"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Adventure Sports
+                    </a>
+                    <a
+                      href="/experiences/cultural"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Cultural
+                    </a>
+                    <a
+                      href="/experiences/food"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Food & Wine
+                    </a>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Destinations
+                  </h3>
+                  <div className="space-y-2 ml-6">
+                    <a
+                      href="/destinations/europe"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Europe
+                    </a>
+                    <a
+                      href="/destinations/asia"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Asia
+                    </a>
+                    <a
+                      href="/destinations/americas"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Americas
+                    </a>
+                    <a
+                      href="/destinations/africa"
+                      className="block text-gray-600 hover:text-gray-900 py-1"
+                    >
+                      Africa
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+              {/* User Actions */}
+              <div className="border-t pt-4 space-y-3">
+                <button className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200">
+                  <User className="w-4 h-4 mr-2" />
+                  Sign In
+                </button>
+                <button className="w-full bg-gradient-to-r from-green-600 to-green-600 text-white py-2 rounded-lg font-semibold hover:from-green-700 hover:to-green-700 transition-all duration-300">
+                  Book Now
+                </button>
+                <div className="flex items-center justify-between text-sm text-gray-600">
+                  <button className="flex items-center px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <Globe className="w-4 h-4 mr-1" />
+                    EN/USD
+                  </button>
+                  <button className="flex items-center px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+                    <Phone className="w-4 h-4 mr-1" />
+                    Support
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default BookingNavbar;

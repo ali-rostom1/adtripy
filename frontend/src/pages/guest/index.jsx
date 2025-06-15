@@ -227,9 +227,7 @@ export default function index() {
                 <p className="hero-content animate-fade-in-up delay-900 font-light text-base sm:text-lg md:text-xl lg:text-2xl xl:text-lg ">
                   Step into a curated collection of the world's most breathtaking vacation homes. From secluded mountain retreats to oceanfront sanctuaries.
                 </p>
-                <p className="hero-content animate-fade-in-up delay-1200 text-sm sm:text-base md:text-lg lg:text-xl xl:text-lg text-gray-300">
-                  Your next unforgettable adventure starts with the perfect stay. Where will your story begin?
-                </p>
+           
               </div>
 
               {/* Search Component */}
