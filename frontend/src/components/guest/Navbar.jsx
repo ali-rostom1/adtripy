@@ -15,8 +15,11 @@ import {
   Settings,
   X,
 } from "lucide-react";
+import { useAuthStore } from "../../store/AuthStore";
 
 const BookingNavbar = () => {
+  const logout = useAuthStore((state) => state.logout);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -45,6 +48,16 @@ const BookingNavbar = () => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
+
+  const handleLogout = async () => {
+    try {
+      await logout(); // Call the logout action from AuthStore
+      window.location.href = "/login"; // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("Failed to log out. Please try again.");
+    }
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -246,7 +259,6 @@ const BookingNavbar = () => {
               >
                 <Search className="w-4 h-4" />
               </button>
-
               {/* Language/Currency */}
               <DropdownMenu
                 trigger={<Globe className="w-4 h-4" />}
@@ -259,8 +271,7 @@ const BookingNavbar = () => {
                 <DropdownItem href="#">Español (EUR)</DropdownItem>
                 <DropdownItem href="#">Deutsch (EUR)</DropdownItem>
               </DropdownMenu>
-
-              {/* User Account */}
+          
               <DropdownMenu
                 trigger={
                   <>
@@ -285,10 +296,11 @@ const BookingNavbar = () => {
                   Profile Settings
                 </DropdownItem>
               </DropdownMenu>
-
-              {/* CTA Button */}
-              <button className="bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                Book Now
+              <button
+                onClick={handleLogout}
+                className="rounded-md border border-white py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white cursor-pointer hover:text-white hover:bg-green-600 hover:border-green-600 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+              >
+                Logout
               </button>
             </div>
 
@@ -477,8 +489,11 @@ const BookingNavbar = () => {
                   <User className="w-4 h-4 mr-2" />
                   Sign In
                 </button>
-                <button className="w-full bg-gradient-to-r from-green-600 to-green-600 text-white py-2 rounded-lg font-semibold hover:from-green-700 hover:to-green-700 transition-all duration-300">
-                  Book Now
+                <button
+                  onClick={handleLogout}
+                  className="w-full bg-gradient-to-r from-red-600 to-red-600 text-white py-2 rounded-lg font-semibold hover:from-red-700 hover:to-red-700 transition-all duration-300"
+                >
+                  Logout
                 </button>
                 <div className="flex items-center justify-between text-sm text-gray-600">
                   <button className="flex items-center px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
