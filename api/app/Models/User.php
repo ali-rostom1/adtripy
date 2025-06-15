@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -67,6 +68,17 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'phone_verified_at' => 'datetime',
             'last_seen_at' => 'datetime',
+            'birth_date' => 'date'
         ];
+    }
+
+    public function age(){
+        if(!$this->birth_date){
+           return null; 
+        }
+        return Carbon::parse($this->birth_date)->age;
+    }
+    public function name(){
+        return trim($this->firstName . ' ' . $this->lastName);
     }
 }
