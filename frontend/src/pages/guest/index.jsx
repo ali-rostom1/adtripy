@@ -1,40 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
+import Navbar from "../../components/guest/Navbar"; // Import the Navbar component
 
 export default function index() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollY, setScrollY] = useState(0);
-  const [lastScrollY, setLastScrollY] = useState(0);
-  const navbar = useRef(null);
-  const mobileMenu = useRef(null);
-
-  // Handle scroll effects
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setScrollY(currentScrollY);
-      
-      if (currentScrollY > 100) {
-        navbar.current.classList.add("glass-dark", "py-2");
-        navbar.current.classList.remove("py-4");
-      } else {
-        navbar.current.classList.remove("glass-dark", "py-2");
-        navbar.current.classList.add("py-4");
-      }
-      
-      // Hide/show navbar on scroll
-      if (currentScrollY > lastScrollY && currentScrollY > 100) {
-        navbar.current.style.transform = "translateY(-100%)";
-      } else {
-        navbar.current.style.transform = "translateY(0)";
-      }
-      
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   // Scroll reveal animation
   useEffect(() => {
@@ -221,15 +189,6 @@ export default function index() {
     }, 1500);
   };
 
-  // Toggle mobile menu
-  const toggleMobileMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-    if (mobileMenu.current) {
-      mobileMenu.current.classList.toggle("hidden");
-      mobileMenu.current.classList.toggle("animate-slide-up");
-    }
-  };
-
   return (
     <div className="font-sans overflow-x-hidden">
       {/* Animated Background */}
@@ -237,54 +196,8 @@ export default function index() {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 opacity-20"></div>
       </div>
 
-      {/* Navigation */}
-      <nav ref={navbar} id="navbar" className="fixed top-0 w-full z-50 transition-all duration-500 py-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <div className="text-white font-sans text-2xl tracking-tight">LuxeStay</div>
-            </div>
-            
-            <div className="hidden lg:flex items-center space-x-8">
-              <Link to="#" className="text-white/90 hover:text-white transition-all duration-300 hover:scale-110 font-medium">Home</Link>
-              <Link to="#" className="text-white/90 hover:text-white transition-all duration-300 hover:scale-110 font-medium">Properties</Link>
-              <Link to="#" className="text-white/90 hover:text-white transition-all duration-300 hover:scale-110 font-medium">Experiences</Link>
-              <Link to="#" className="text-white/90 hover:text-white transition-all duration-300 hover:scale-110 font-medium">About</Link>
-              <Link to="#" className="text-white/90 hover:text-white transition-all duration-300 hover:scale-110 font-medium">Contact</Link>
-            </div>
-            
-            <div className="hidden lg:flex items-center space-x-4">
-              <button className="text-white/90 hover:text-white transition-all duration-300 px-4 py-2 rounded-lg hover:bg-white/10 font-medium">
-                Sign In
-              </button>
-              <button className="bg-gradient-to-r text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-black transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
-                Book Now 
-              </button>
-            </div>
-            
-            <button id="mobile-menu-btn" onClick={toggleMobileMenu} className="lg:hidden text-white p-2">
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-          </div>
-        </div>
-        
-        {/* Mobile Menu */}
-        <div ref={mobileMenu} id="mobile-menu" className="lg:hidden hidden glass-dark rounded-2xl mx-4 mt-4 p-6">
-          <div className="space-y-4">
-            <Link to="#" className="block text-white hover:text-blue-400 transition-colors duration-300 font-medium">Home</Link>
-            <Link to="#" className="block text-white hover:text-blue-400 transition-colors duration-300 font-medium">Properties</Link>
-            <Link to="#" className="block text-white hover:text-blue-400 transition-colors duration-300 font-medium">Experiences</Link>
-            <Link to="#" className="block text-white hover:text-blue-400 transition-colors duration-300 font-medium">About</Link>
-            <Link to="#" className="block text-white hover:text-blue-400 transition-colors duration-300 font-medium">Contact</Link>
-            <div className="pt-4 space-y-2">
-              <button className="w-full text-white bg-white/10 py-2 rounded-lg font-medium">Sign In</button>
-              <button className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-lg font-semibold">Book Now</button>
-            </div>
-          </div>
-        </div>
-      </nav>
+      {/* Replace the nav element with the Navbar component */}
+      <Navbar />
 
       {/* Hero Section */}
       <section className="min-h-screen bg-black text-white relative overflow-hidden">
