@@ -23,7 +23,8 @@ export default function Login() {
 
     try {
       await login(email, password);
-      navigate("/dashboard");
+      // Change the redirect destination from dashboard to guest page
+      navigate("/guest");
     } catch (err) {
       console.error("Login error:", err);
       setError(err.response?.data?.message || "Invalid email or password");

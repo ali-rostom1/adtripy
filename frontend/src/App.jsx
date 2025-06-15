@@ -4,6 +4,7 @@ import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import GuestPage from "./pages/guest"; // Import your guest page component
 import PrivateRoute from "./components/PrivateRoute";
 import AuthProvider from "./components/AuthProvider";
 import { useAuthStore } from "./store/AuthStore";
@@ -17,10 +18,13 @@ function App() {
       <AuthProvider>
         <Routes>
           {/* Public routes */}
-          <Route path="/login" element={user ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/dashboard" /> : <Register />} />
+          <Route path="/login" element={user ? <Navigate to="/guest" /> : <Login />} />
+          <Route path="/register" element={user ? <Navigate to="/guest" /> : <Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          
+          {/* Guest route */}
+          <Route path="/guest" element={<GuestPage />} />
           
           {/* Protected routes */}
           <Route
@@ -32,8 +36,8 @@ function App() {
             }
           />
           
-          {/* Redirect to dashboard or login */}
-          <Route path="/" element={user ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+          {/* Redirect to guest page or login */}
+          <Route path="/" element={user ? <Navigate to="/guest" /> : <Navigate to="/login" />} />
           
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
