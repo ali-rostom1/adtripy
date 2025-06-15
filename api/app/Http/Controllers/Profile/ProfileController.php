@@ -90,14 +90,15 @@ class ProfileController extends Controller
     public function update(Request $request){
         try{
             $request->validate([
-                'firstName' => 'required|string|max:255',
-                'lastName' => 'required|string|max:255',
+                'firstName' => 'nullable|string|max:255',
+                'lastName' => 'nullable|string|max:255',
                 'birth_date' => 'nullable|date',
                 'city' => 'nullable|string|max:100',
                 'country' => 'nullable|string|max:100',
             ]);
             $user = Auth::user();
-            $user = $user->update($request->all());
+            $user->update($request->all());
+            $user->refresh();
 
             return response()->json([
                 'status' => 'success',
