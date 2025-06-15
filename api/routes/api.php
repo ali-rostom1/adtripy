@@ -69,4 +69,8 @@ Route::prefix('v1')->group(function () {
         Route::post('/profile/picture', [ProfileController::class, 'editPfp']);
         Route::delete('/profile/picture', [ProfileController::class, 'deletePfp']);
     });
+    
+    //Other Profiles routes
+    Route::get('/profile/host/{id}', [HostProfileController::class, 'show']);
+
 });

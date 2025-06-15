@@ -204,7 +204,7 @@ export default function index() {
         {/* Background Video */}
         <div className="absolute inset-0">
           <video autoPlay loop muted playsInline className="w-screen h-screen object-cover object-center">
-            <source src="./video/videoBg.mp4" type="video/mp4" />
+            <source src="/src/assets/video/videoBg.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black/30 sm:bg-black/25 lg:bg-black/30"></div>
@@ -227,9 +227,7 @@ export default function index() {
                 <p className="hero-content animate-fade-in-up delay-900 font-light text-base sm:text-lg md:text-xl lg:text-2xl xl:text-lg ">
                   Step into a curated collection of the world's most breathtaking vacation homes. From secluded mountain retreats to oceanfront sanctuaries.
                 </p>
-                <p className="hero-content animate-fade-in-up delay-1200 text-sm sm:text-base md:text-lg lg:text-xl xl:text-lg text-gray-300">
-                  Your next unforgettable adventure starts with the perfect stay. Where will your story begin?
-                </p>
+           
               </div>
 
               {/* Search Component */}

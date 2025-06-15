@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
@@ -12,20 +17,26 @@ import "./index.css";
 
 function App() {
   const { user } = useAuthStore();
-  
+
   return (
     <Router>
       <AuthProvider>
         <Routes>
           {/* Public routes */}
-          <Route path="/login" element={user ? <Navigate to="/guest" /> : <Login />} />
-          <Route path="/register" element={user ? <Navigate to="/guest" /> : <Register />} />
+          <Route
+            path="/login"
+            element={user ? <Navigate to="/guest" /> : <Login />}
+          />
+          <Route
+            path="/register"
+            element={user ? <Navigate to="/guest" /> : <Register />}
+          />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          
+
           {/* Guest route */}
           <Route path="/guest" element={<GuestPage />} />
-          
+
           {/* Protected routes */}
           <Route
             path="/dashboard"
@@ -35,10 +46,15 @@ function App() {
               </PrivateRoute>
             }
           />
-          
+
+  
+
           {/* Redirect to guest page or login */}
-          <Route path="/" element={user ? <Navigate to="/guest" /> : <Navigate to="/login" />} />
-          
+          <Route
+            path="/"
+            element={user ? <Navigate to="/guest" /> : <Navigate to="/login" />}
+          />
+
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
