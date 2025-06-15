@@ -224,12 +224,17 @@ class AuthController extends Controller
                 Log::error('Failed to send verification email: ' . $e->getMessage());
                 // Continue with registration even if email fails
             }
+            $refreshToken = JWTAuth::customClaims([
+                'exp' => now()->addDays(30)->timestamp,
+                'token_type' => 'refresh'
+            ])->fromUser($user);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'User created successfully. Please check your email to verify your account.',
                 'user' => $user,
                 'access_token' => $token,
+                'refresh_token'=> $refreshToken,
                 'token_type' => 'bearer',
                 'expires_in' => Auth::factory()->getTTL() * 60
             ], 201);

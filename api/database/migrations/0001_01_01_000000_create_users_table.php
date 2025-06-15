@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone')->nullable();
             $table->date('birth_date')->nullable();
-            $table->integer('age')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->timestamp('last_seen_at')->nullable();

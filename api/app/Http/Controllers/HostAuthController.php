@@ -20,49 +20,19 @@ class HostAuthController extends Controller
 {
 
     public function register(Request $request){
-        $request->validate([
-            'firstName' => 'required|string|max:255',
-            'lastName' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
 
         try {
-            $user = User::create([
-                'id' => (string) Str::uuid(),
-                'firstName' => $request->firstName,
-                'lastName' => $request->lastName,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone ?? null,
-            ]);
-            $user->syncRoles(['unverified-host']);
+            $user = Auth::user();
+            $user->assignRole('unverified-host');
             $host = Host::create([
                 'id' => (string) Str::uuid(),
                 'user_id' => $user->id,
             ]);
 
-            // Generate access token
-            $token = JWTAuth::fromUser($user);
-
-            // Send verification email
-            try {
-                $verificationToken = Str::random(60);
-                Cache::put('email_verify_' . $verificationToken, $user->getKey(), now()->addHours(24));
-                $verificationUrl = URL::to('/api/v1/verify-email/' . $verificationToken);
-                Mail::to($user->email)->send(new VerifyEmail($user, $verificationUrl));
-            } catch (Exception $e) {
-                Log::error('Failed to send verification email: ' . $e->getMessage());
-                // Continue with registration even if email fails
-            }
-
             return response()->json([
                 'status' => 'success',
-                'message' => 'User created successfully. Please check your email to verify your account.',
-                'user' => $user,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => Auth::factory()->getTTL() * 60
+                'message' => 'Host registered successfully',
+                'user' => $user,    
             ], 201);
         } catch (Exception $e) {
             Log::error('User Registration Error: ' . $e->getMessage());

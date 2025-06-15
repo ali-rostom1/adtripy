@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Controllers\HostAuthController;
 use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Profile\GuestProfileController;
+use App\Http\Controllers\Profile\HostProfileController;
+use App\Http\Controllers\Profile\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -30,6 +34,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
+    Route::post('/host/register', [HostAuthController::class,'register'])->middleware('auth:api');
+
+    
     Route::post('/send-code', [AuthController::class, 'sendVerificationCode'])->middleware('auth');
     Route::post('/verify-phone', [AuthController::class, 'verifyPhone'])->middleware('auth');
 
@@ -49,4 +56,17 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/reset-password', [PasswordResetController::class, 'reset'])
         ->name('password.reset');
+
+    // Own Profile routes
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/me/guest-profile', [GuestProfileController::class, 'me']);
+        Route::get('/me/host-profile', [HostProfileController::class, 'me']);
+
+        
+        Route::put('/profile/edit',[ProfileController::class, 'update']);
+
+        // Profile picture routes
+        Route::post('/profile/picture', [ProfileController::class, 'editPfp']);
+        Route::delete('/profile/picture', [ProfileController::class, 'deletePfp']);
+    });
 });
