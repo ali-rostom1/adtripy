@@ -63,6 +63,7 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/host-profile', [HostProfileController::class, 'me']);
 
         
+        Route::put('/profile/edit',[ProfileController::class, 'update']);
 
         // Profile picture routes
         Route::post('/profile/picture', [ProfileController::class, 'editPfp']);
