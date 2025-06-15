@@ -28,7 +28,6 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'phone',
         'birth_date',
-        'age',
         'city',
         'country',
         'last_seen_at',
@@ -36,6 +35,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at',
         'phone_verified_at',
     ];
+    protected $appends = ['age'];
     protected $keyType = 'string';
     public $incrementing = false;
 
@@ -72,7 +72,7 @@ class User extends Authenticatable implements JWTSubject
         ];
     }
 
-    public function age(){
+    public function getAgeAttribute(){
         if(!$this->birth_date){
            return null; 
         }
