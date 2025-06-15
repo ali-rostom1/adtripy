@@ -411,12 +411,21 @@ export default function index() {
           </div>
         </div>
 
-        {/* Responsive gradient overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-24 md:h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
       </section>
 
-      <section className="bg-white py-24 px-4 md:px-8 lg:px-16">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative bg-white py-24 px-4 md:px-8 lg:px-16">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <img
+            src="/src/assets/img/homeBg.jpg"
+            alt="Background"
+            className="w-full h-full object-cover opacity-10"
+          />
+          <div className="absolute inset-0 bg-white/80"></div>
+        </div>
+
+        <div className="relative max-w-7xl mx-auto z-10">
           {/* Elegant Content Section */}
           <div className="grid grid-cols-12 mb-6 gap-12 items-center">
             {/* Left Content */}
@@ -542,6 +551,204 @@ export default function index() {
           {/* Decorative Element */}
           <div className="flex justify-center mt-16">
             <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-gray-50 py-14 border border-t-green-500 px-4 md:px-8 lg:px-16">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-20">
+            <div className="inline-flex items-center space-x-3 mb-8">
+              <div className="w-16 h-[1px] bg-gradient-to-r from-transparent to-green-600"></div>
+              <span className="text-green-700 text-sm font-bold tracking-[0.2em] uppercase">
+                Our Partners
+              </span>
+              <div className="w-16 h-[1px] bg-gradient-to-r from-green-600 to-transparent"></div>
+            </div>
+
+            <h2 className="text-5xl md:text-5xl lg:text-5xl font-light text-gray-900 leading-[0.9] tracking-tight mb-6">
+              Trusted by{" "}
+              <span className="italic font-light text-green-700">Industry</span>
+            </h2>
+            <h2 className="text-4xl md:text-4xl lg:text-4xl font-bold text-gray-900 leading-[0.9] tracking-tight mb-8">
+              Leaders
+            </h2>
+
+            <p className="text-xl text-gray-600 font-light leading-relaxed italic max-w-3xl mx-auto">
+              Collaborating with premium brands across automotive, hospitality,
+              and experiential sectors.
+            </p>
+          </div>
+
+          {/* Premium Categories Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
+            {/* Automotive Sector */}
+            <div className="group">
+              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                <div className="relative mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    Automotive Excellence
+                  </h3>
+                  <p className="text-gray-600 font-light leading-relaxed mb-6">
+                    Partnering with luxury car dealerships and automotive brands
+                    to create exceptional digital experiences.
+                  </p>
+                </div>
+
+                {/* Client Logos Placeholder */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      BMW
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Mercedes
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Audi
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Porsche
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Experiences Sector */}
+            <div className="group">
+              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                <div className="relative mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    Premium Experiences
+                  </h3>
+                  <p className="text-gray-600 font-light leading-relaxed mb-6">
+                    Creating unforgettable moments with event agencies and
+                    experience curators worldwide.
+                  </p>
+                </div>
+
+                {/* Client Logos Placeholder */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      EventCorp
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      LuxEvents
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Prestige
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Elite
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Hospitality Sector */}
+            <div className="group">
+              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
+                <div className="relative mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+                    <svg
+                      className="w-8 h-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1.5}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                    Luxury Hospitality
+                  </h3>
+                  <p className="text-gray-600 font-light leading-relaxed mb-6">
+                    Elevating hospitality brands with sophisticated digital
+                    solutions and booking experiences.
+                  </p>
+                </div>
+
+                {/* Client Logos Placeholder */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Marriott
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Hilton
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Ritz
+                    </span>
+                  </div>
+                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
+                    <span className="text-gray-400 font-medium text-sm">
+                      Four Seasons
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Decorative Element */}
+          <div className="flex justify-center mt-16">
+            <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
           </div>
         </div>
       </section>
@@ -735,91 +942,6 @@ export default function index() {
             </div>
 
             {/* Repeat similar structure for other property cards */}
-          </div>
-        </div>
-      </section>
-
-      {/* Experience Section */}
-      <section className="relative py-32 bg-black overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <img
-            src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
-            alt="Luxury experience"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 scroll-reveal">
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-6">
-              More Than Just a <span className="gradient-text">Stay</span>
-            </h2>
-            <p className="text-xl text-white/80 max-w-3xl mx-auto">
-              Curated experiences that transform your vacation into
-              unforgettable memories
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="scroll-reveal">
-              <div className="glass-dark rounded-3xl p-8 text-center hover-scale">
-                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-glow">
-                  <svg
-                    className="w-10 h-10 text-white"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                    ></path>
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Luxury Concierge
-                </h3>
-                <p className="text-white/80">
-                  24/7 personal concierge service for all your needs
-                </p>
-              </div>
-            </div>
-
-            {/* Additional experience cards with similar structure */}
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Section */}
-      <section className="relative py-32 bg-black">
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="scroll-reveal">
-            <h2 className="text-4xl md:text-6xl font-black text-white mb-8">
-              Stay in the Loop
-            </h2>
-            <p className="text-xl text-white/90 mb-12">
-              Get exclusive access to luxury properties and insider travel tips
-            </p>
-
-            <div className="glass-effect rounded-2xl p-8 max-w-2xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <input
-                  type="email"
-                  placeholder="Enter your email address"
-                  className="flex-1 bg-white/10 border border-white/20 rounded-xl px-6 py-4 text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300 text-lg"
-                />
-                <button
-                  onClick={handleSubscribe}
-                  className="bg-white text-gray-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 whitespace-nowrap"
-                >
-                  Subscribe Now
-                </button>
-              </div>
-              <p className="text-white/70 text-sm mt-4">
-                Join 50,000+ travelers who get exclusive deals first
-              </p>
-            </div>
           </div>
         </div>
       </section>
