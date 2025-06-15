@@ -123,4 +123,5 @@ return [
     ],
 
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+    'aws_url' => env('AWS_URL', 'https://s3.amazonaws.com'),
 ];
