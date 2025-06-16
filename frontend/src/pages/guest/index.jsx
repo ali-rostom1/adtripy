@@ -380,7 +380,7 @@ export default function EnhancedLandingPage() {
         <div className="absolute inset-0">
           <video autoPlay loop muted playsInline className="w-screen h-screen object-cover object-center">
             <source src="/src/assets/video/videoBg.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
+            Your browser does not support the video tag .
           </video>
           <div className="absolute inset-0 bg-black/30 sm:bg-black/25 lg:bg-black/30"></div>
         </div>
