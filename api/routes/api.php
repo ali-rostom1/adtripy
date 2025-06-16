@@ -32,11 +32,12 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
-    Route::post('/host/register', [HostAuthController::class,'register'])->middleware('auth:api');
+    Route::post('/host/register', [HostAuthController::class, 'register'])->middleware('auth:api');
 
-    
+
     Route::post('/send-code', [AuthController::class, 'sendVerificationCode'])->middleware('auth');
     Route::post('/verify-phone', [AuthController::class, 'verifyPhone'])->middleware('auth');
 
@@ -62,14 +63,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/guest-profile', [GuestProfileController::class, 'me']);
         Route::get('/me/host-profile', [HostProfileController::class, 'me']);
 
-        
-        Route::put('/profile/edit',[ProfileController::class, 'update']);
+
+        Route::put('/profile/edit', [ProfileController::class, 'update']);
 
         // Profile picture routes
         Route::post('/profile/picture', [ProfileController::class, 'editPfp']);
         Route::delete('/profile/picture', [ProfileController::class, 'deletePfp']);
     });
-    
     //Other Profiles routes
     Route::get('/profile/host/{id}', [HostProfileController::class, 'show']);
 
