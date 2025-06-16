@@ -40,7 +40,7 @@ export default function Login() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="/src/assets/img/bggreen.jpg"
+            src="/assets/img/bggreen.jpg"
             alt="Login Background"
             className="w-full h-full object-cover"
           />
@@ -58,7 +58,7 @@ export default function Login() {
             {/* Top section - Logo */}
             <div className="flex-shrink-0">
               <img
-                src="/src/assets/img/whiteLogo.png"
+                src="/assets/img/whiteLogo.png"
                 alt="ADTRIPY Logo"
                 className="w-[200px]"
               />
@@ -118,7 +118,7 @@ export default function Login() {
           <div className="text-center space-y-2">
             <div className="flex  justify-center">
               <img
-                src="/src/assets/img/logoAdtripy.png"
+                src="/assets/img/logoAdtripy.png"
                 alt="Login Background"
                 className="w-[250px] h-full object-cover"
               />
