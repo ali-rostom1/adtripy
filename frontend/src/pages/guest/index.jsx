@@ -1450,187 +1450,81 @@ export default function EnhancedLandingPage() {
         </div>
       </section>
 
-      {/* Enhanced Featured Properties Section */}
-      <section className="relative py-32 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      <section className="relative py-20 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
         {/* Enhanced Background Elements */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Large gradient orbs */}
           <div
-            className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-br from-blue-100/30 to-purple-100/20 rounded-full blur-3xl animate-pulse"
+            className="absolute -top-40 -left-40 w-96 h-96 bg-gradient-to-br from-green-100/30 to-emerald-100/20 rounded-full blur-3xl animate-pulse"
             style={{ animationDelay: "0s" }}
           ></div>
           <div
-            className="absolute top-1/2 -right-48 w-80 h-80 bg-gradient-to-bl from-green-100/25 to-blue-100/15 rounded-full blur-3xl animate-pulse"
+            className="absolute top-1/2 -right-48 w-80 h-80 bg-gradient-to-bl from-green-100/25 to-teal-100/15 rounded-full blur-3xl animate-pulse"
             style={{ animationDelay: "6s" }}
-          ></div>
-          <div
-            className="absolute -bottom-32 left-1/4 w-72 h-72 bg-gradient-to-tr from-purple-100/20 to-pink-100/15 rounded-full blur-3xl animate-pulse"
-            style={{ animationDelay: "12s" }}
           ></div>
 
           {/* Floating geometric shapes */}
           <div
-            className="absolute top-1/4 left-1/6 w-6 h-6 bg-blue-200/40 transform rotate-45 animate-spin"
+            className="absolute top-1/4 left-1/6 w-4 h-4 bg-green-200/40 transform rotate-45 animate-spin"
             style={{ animationDuration: "30s" }}
           ></div>
           <div
-            className="absolute bottom-1/3 right-1/5 w-8 h-8 bg-purple-200/30 transform rotate-45 animate-spin"
+            className="absolute bottom-1/3 right-1/5 w-6 h-6 bg-emerald-200/30 transform rotate-45 animate-spin"
             style={{ animationDuration: "25s", animationDelay: "8s" }}
-          ></div>
-          <div
-            className="absolute top-2/3 left-1/3 w-4 h-4 bg-green-200/50 transform rotate-45 animate-spin"
-            style={{ animationDuration: "20s", animationDelay: "15s" }}
           ></div>
 
           {/* Subtle dot pattern */}
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-5"
             style={{
-              backgroundImage: `radial-gradient(circle at 2px 2px, #6366f1 1px, transparent 0)`,
-              backgroundSize: "60px 60px",
+              backgroundImage: `radial-gradient(circle at 2px 2px, #10b981 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
             }}
           ></div>
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Featured Properties content remains the same */}
-          <div className="text-center mb-20 scroll-reveal">
-            <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-6">
-              Featured <span className="gradient-text">Luxury Stays</span>
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center space-x-3 mb-6">
+              <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-green-600"></div>
+              <span className="text-green-700 text-sm font-bold tracking-[0.2em] uppercase">
+                Special Offers
+              </span>
+              <div className="w-12 h-[1px] bg-gradient-to-r from-green-600 to-transparent"></div>
+            </div>
+
+            <h2 className="text-4xl md:text-5xl font-light text-gray-900 mb-4">
+              Curated{" "}
+              <span className="font-bold text-green-700">Experiences</span>
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              Handpicked extraordinary properties that redefine luxury and
-              comfort
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Discover handpicked offers across luxury accommodations, premium
+              vehicles, and unforgettable experiences
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-8 mb-16">
-            <div className="lg:row-span-2 scroll-reveal">
-              <div className="relative group overflow-hidden rounded-3xl hover-scale card-3d h-full min-h-[600px]">
-                <img
-                  src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                  alt="Featured property"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                <div className="absolute top-6 left-6">
-                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-4 py-2 rounded-full text-sm font-bold">
-                    ⭐ Featured
-                  </span>
-                </div>
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center space-x-2">
-                      <div className="flex text-yellow-400">★★★★★</div>
-                      <span className="text-white/90 text-sm">
-                        (4.9) • 127 reviews
-                      </span>
-                    </div>
-                    <button className="text-white hover:text-red-400 transition-colors">
-                      <svg
-                        className="w-6 h-6"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                      </svg>
-                    </button>
-                  </div>
-                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                    Modern Desert Oasis
-                  </h3>
-                  <p className="text-white/80 mb-4">
-                    Stunning architectural masterpiece with infinity pool and
-                    panoramic mountain views
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-3xl font-black text-white">
-                        $850
-                      </span>
-                      <span className="text-white/80 text-lg">/night</span>
-                    </div>
-                    <button
-                      onClick={handleBooking}
-                      className="bg-white text-black px-6 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all duration-300 transform hover:scale-105"
-                    >
-                      Book Now
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              <div className="scroll-reveal">
-                <div className="relative group overflow-hidden rounded-3xl hover-scale card-3d h-72">
+          {/* Offers Row - Horizontal Layout */}
+          <div className="flex flex-row gap-6 overflow-x-auto pb-4 scroll-smooth">
+            {/* Luxury Car Offer */}
+            <div className="flex-shrink-0 w-80">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="relative h-48 overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Property"
+                    src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                    alt="Luxury Sports Car"
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      Coastal Villa
-                    </h3>
-                    <p className="text-white/80 text-sm mb-2">
-                      Beachfront luxury with private beach access
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-white">
-                        $620/night
-                      </span>
-                      <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/30 transition-all">
-                        View
-                      </button>
-                    </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      🚗 Cars
+                    </span>
                   </div>
-                </div>
-              </div>
-
-              <div className="scroll-reveal">
-                <div className="relative group overflow-hidden rounded-3xl hover-scale card-3d h-72">
-                  <img
-                    src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-                    alt="Property"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h3 className="text-xl font-bold text-white mb-1">
-                      Mountain Retreat
-                    </h3>
-                    <p className="text-white/80 text-sm mb-2">
-                      Alpine luxury with ski-in, ski-out access
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xl font-bold text-white">
-                        $750/night
-                      </span>
-                      <button className="bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-white/30 transition-all">
-                        View
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="scroll-reveal">
-              <div className="bg-white rounded-3xl overflow-hidden shadow-lg hover-scale card-3d">
-                <div className="relative">
-                  <img
-                    src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80"
-                    alt="Property"
-                    className="w-full h-64 object-cover"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <button className="bg-white/90 p-2 rounded-full hover:bg-white transition-all">
+                  <div className="absolute top-3 right-3">
+                    <button className="bg-white/80 p-1.5 rounded-full hover:bg-white transition-all">
                       <svg
-                        className="w-5 h-5 text-gray-700"
+                        className="w-4 h-4 text-gray-700"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1645,34 +1539,312 @@ export default function EnhancedLandingPage() {
                     </button>
                   </div>
                 </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
                     <div className="flex text-yellow-400 text-sm">★★★★★</div>
-                    <span className="text-gray-500 text-sm">4.8 (92)</span>
+                    <span className="text-gray-500 text-xs">4.9 (156)</span>
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">
-                    Urban Penthouse
+
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Lamborghini Huracán
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    Downtown luxury with rooftop terrace
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    Experience the thrill of driving a supercar with premium
+                    insurance and concierge support.
                   </p>
+
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-2xl font-black text-gray-900">
-                        $420
+                      <span className="text-xl font-black text-gray-900">
+                        $899
                       </span>
-                      <span className="text-gray-500">/night</span>
+                      <span className="text-gray-500 text-sm">/day</span>
                     </div>
-                    <button
-                      onClick={handleBooking}
-                      className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all transform hover:scale-105"
-                    >
+                    <button className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-red-600 transition-all">
                       Book
                     </button>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* Helicopter Experience */}
+            <div className="flex-shrink-0 w-80">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1540979388789-6cee28a1cdc9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                    alt="Helicopter Tour"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      🚁 Experiences
+                    </span>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <button className="bg-white/80 p-1.5 rounded-full hover:bg-white transition-all">
+                      <svg
+                        className="w-4 h-4 text-gray-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex text-yellow-400 text-sm">★★★★★</div>
+                    <span className="text-gray-500 text-xs">4.8 (89)</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Private Helicopter Tour
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    Soar above breathtaking landscapes with champagne service
+                    and professional photography.
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xl font-black text-gray-900">
+                        $1,299
+                      </span>
+                      <span className="text-gray-500 text-sm">/tour</span>
+                    </div>
+                    <button className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-all">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Luxury Villa */}
+            <div className="flex-shrink-0 w-80">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                    alt="Luxury Villa"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      🏖️ Stays
+                    </span>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <button className="bg-white/80 p-1.5 rounded-full hover:bg-white transition-all">
+                      <svg
+                        className="w-4 h-4 text-gray-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex text-yellow-400 text-sm">★★★★★</div>
+                    <span className="text-gray-500 text-xs">4.9 (234)</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Oceanfront Villa
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    Stunning villa with infinity pool, private beach access, and
+                    world-class amenities.
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xl font-black text-gray-900">
+                        $2,450
+                      </span>
+                      <span className="text-gray-500 text-sm">/night</span>
+                    </div>
+                    <button className="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600 transition-all">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Yacht Charter */}
+            <div className="flex-shrink-0 w-80">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                    alt="Luxury Yacht"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-cyan-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      ⛵ Yacht
+                    </span>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <button className="bg-white/80 p-1.5 rounded-full hover:bg-white transition-all">
+                      <svg
+                        className="w-4 h-4 text-gray-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex text-yellow-400 text-sm">★★★★★</div>
+                    <span className="text-gray-500 text-xs">4.9 (67)</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Luxury Yacht Charter
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    Set sail with professional crew, gourmet dining, and access
+                    to exclusive destinations.
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xl font-black text-gray-900">
+                        $3,500
+                      </span>
+                      <span className="text-gray-500 text-sm">/day</span>
+                    </div>
+                    <button className="bg-cyan-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-cyan-600 transition-all">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Wine Tasting Experience */}
+            <div className="flex-shrink-0 w-80">
+              <div className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80"
+                    alt="Wine Tasting"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-semibold">
+                      🍷 Tasting
+                    </span>
+                  </div>
+                  <div className="absolute top-3 right-3">
+                    <button className="bg-white/80 p-1.5 rounded-full hover:bg-white transition-all">
+                      <svg
+                        className="w-4 h-4 text-gray-700"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex text-yellow-400 text-sm">★★★★★</div>
+                    <span className="text-gray-500 text-xs">4.7 (143)</span>
+                  </div>
+
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    Premium Wine Tasting
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                    Exclusive vineyard tours with sommelier-guided tastings of
+                    rare vintage wines.
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-xl font-black text-gray-900">
+                        $299
+                      </span>
+                      <span className="text-gray-500 text-sm">/person</span>
+                    </div>
+                    <button className="bg-purple-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-purple-600 transition-all">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* View More Button */}
+          <div className="text-center mt-12">
+            <button className="inline-flex items-center space-x-2 bg-white border-2 border-green-600 text-green-600 px-8 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-all duration-300">
+              <span>View More Offers</span>
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Decorative Element */}
+          <div className="flex justify-center mt-12">
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-green-400 to-transparent"></div>
           </div>
         </div>
       </section>
