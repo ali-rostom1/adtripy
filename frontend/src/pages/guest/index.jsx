@@ -420,18 +420,15 @@ export default function index() {
         <div className="absolute bottom-0 left-0 right-0 h-20 sm:h-24 md:h-32 bg-gradient-to-t from-black/50 to-transparent pointer-events-none"></div>
       </section>
 
-      <section className="relative bg-white py-24 px-4 md:px-8 lg:px-16">
-        {/* Background Image */}
-        <div className="absolute inset-0">
-          <img
-            src="/src/assets/img/homeBg.jpg"
-            alt="Background"
-            className="w-full h-full object-cover opacity-10"
-          />
-          <div className="absolute inset-0 bg-white/80"></div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto z-10">
+      <section
+        className=" py-24 px-4 md:px-8 lg:px-16 relative bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: "url('/src/assets/img/homeBg.jpg')",
+        }}
+      >
+        {/* Optional overlay for better text readability */}
+        <div className="absolute inset-0 bg-white/90"></div>
+        <div className="max-w-7xl mx-auto relative z-10">
           {/* Elegant Content Section */}
           <div className="grid grid-cols-12 mb-6 gap-12 items-center">
             {/* Left Content */}
@@ -588,14 +585,62 @@ export default function index() {
           </div>
 
           {/* Premium Categories Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20">
-            {/* Automotive Sector */}
-            <div className="group">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                <div className="relative mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-20">
+            {/* Experiences Sector */}
+            <div className="group cursor-pointer">
+              <div className="bg-white rounded-none border border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src="/src/assets/img/exp1.jpg"
+                    alt="Premium Experiences"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+                  <div className="absolute bottom-6 left-6">
+                    <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
+                      Premium Experiences
+                    </h3>
+                    <div className="w-16 h-[1px] bg-white/60"></div>
+                  </div>
+                </div>
+
+                <div className="p-8">
+                  <p className="text-gray-600 leading-relaxed mb-8 font-light">
+                    Creating unforgettable moments with event agencies and
+                    experience curators who define luxury in their respective
+                    fields.
+                  </p>
+
+                  {/* Classic Client Grid */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        LuxEvents Global
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        Prestige Experiences
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="font-medium text-gray-800">
+                        Elite Curation
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Classic Footer */}
+                <div className="px-8 pb-8">
+                  <div className="flex items-center text-green-700 font-medium text-sm tracking-wider uppercase group-hover:text-green-800 transition-colors duration-300">
+                    <span>View Projects</span>
                     <svg
-                      className="w-8 h-8 text-white"
+                      className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -603,53 +648,68 @@ export default function index() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
                       />
                     </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Automotive Excellence
-                  </h3>
-                  <p className="text-gray-600 font-light leading-relaxed mb-6">
-                    Partnering with luxury car dealerships and automotive brands
-                    to create exceptional digital experiences.
-                  </p>
-                </div>
-
-                {/* Client Logos Placeholder */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      BMW
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Mercedes
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Audi
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Porsche
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
+            {/* Automotive Sector */}
+            <div className="group cursor-pointer">
+              <div className="bg-white rounded-none border border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src="/src/assets/img/cars.jpg"
+                    alt="Premium Experiences"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
 
-            {/* Experiences Sector */}
-            <div className="group">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                <div className="relative mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+                  <div className="absolute bottom-6 left-6">
+                    <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
+                      Automotive Excellence
+                    </h3>
+                    <div className="w-16 h-[1px] bg-white/60"></div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-8">
+                  <p className="text-gray-600 leading-relaxed mb-8 font-light">
+                    Partnering with luxury car dealerships and automotive brands
+                    to create exceptional digital experiences that drive
+                    performance.
+                  </p>
+
+                  {/* Classic Client Grid */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        BMW Group
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        Mercedes-Benz
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="font-medium text-gray-800">Porsche</span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Classic Footer */}
+                <div className="px-8 pb-8">
+                  <div className="flex items-center text-green-700 font-medium text-sm tracking-wider uppercase group-hover:text-green-800 transition-colors duration-300">
+                    <span>View Projects</span>
                     <svg
-                      className="w-8 h-8 text-white"
+                      className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -657,53 +717,71 @@ export default function index() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
                       />
                     </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Premium Experiences
-                  </h3>
-                  <p className="text-gray-600 font-light leading-relaxed mb-6">
-                    Creating unforgettable moments with event agencies and
-                    experience curators worldwide.
-                  </p>
-                </div>
-
-                {/* Client Logos Placeholder */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      EventCorp
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      LuxEvents
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Prestige
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Elite
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Hospitality Sector */}
-            <div className="group">
-              <div className="bg-white rounded-3xl p-8 shadow-xl hover:shadow-2xl transition-all duration-700 hover:-translate-y-2">
-                <div className="relative mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-400 rounded-2xl flex items-center justify-center mb-6">
+            <div className="group cursor-pointer">
+              <div className="bg-white rounded-none border border-gray-200 hover:border-green-300 transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src="/src/assets/img/hotel1.jpg"
+                    alt="Premium Experiences"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+
+                  <div className="absolute bottom-6 left-6">
+                    <h3 className="text-2xl font-bold text-white mb-2 tracking-tight">
+                      Luxury Hospitality
+                    </h3>
+                    <div className="w-16 h-[1px] bg-white/60"></div>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-8">
+                  <p className="text-gray-600 leading-relaxed mb-8 font-light">
+                    Elevating hospitality brands with sophisticated digital
+                    solutions and seamless booking experiences that exceed
+                    expectations.
+                  </p>
+
+                  {/* Classic Client Grid */}
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        Marriott International
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3 border-b border-gray-100 group-hover:border-green-100 transition-colors duration-300">
+                      <span className="font-medium text-gray-800">
+                        Hilton Worldwide
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                    <div className="flex items-center justify-between py-3">
+                      <span className="font-medium text-gray-800">
+                        Four Seasons Hotels
+                      </span>
+                      <div className="w-2 h-2 bg-green-600 rounded-full opacity-60"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Classic Footer */}
+                <div className="px-8 pb-8">
+                  <div className="flex items-center text-green-700 font-medium text-sm tracking-wider uppercase group-hover:text-green-800 transition-colors duration-300">
+                    <span>View Projects</span>
                     <svg
-                      className="w-8 h-8 text-white"
+                      className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform duration-300"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -711,41 +789,10 @@ export default function index() {
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                        strokeWidth={2}
+                        d="M17 8l4 4m0 0l-4 4m4-4H3"
                       />
                     </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Luxury Hospitality
-                  </h3>
-                  <p className="text-gray-600 font-light leading-relaxed mb-6">
-                    Elevating hospitality brands with sophisticated digital
-                    solutions and booking experiences.
-                  </p>
-                </div>
-
-                {/* Client Logos Placeholder */}
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Marriott
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Hilton
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Ritz
-                    </span>
-                  </div>
-                  <div className="h-16 bg-gray-100 rounded-xl flex items-center justify-center group-hover:bg-green-50 transition-colors duration-300">
-                    <span className="text-gray-400 font-medium text-sm">
-                      Four Seasons
-                    </span>
                   </div>
                 </div>
               </div>
