@@ -52,7 +52,7 @@ export default function Register() {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden rounded-r-full">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img src="/src/assets/img/bggreen.jpg" alt="Register Background" className="w-full h-full object-cover" />
+          <img src="./assets/img/bggreen.jpg" alt="Register Background" className="w-full h-full object-cover" />
         </div>
 
         <div className="absolute inset-0 bg-black/20">
@@ -66,7 +66,7 @@ export default function Register() {
           <div className="flex flex-col gap-4 h-full p-12">
             {/* Top section - Logo */}
             <div className="flex-shrink-0">
-              <img src="/src/assets/img/whiteLogo.png" alt="ADTRIPY Logo" className="w-[200px]" />
+              <img src="./assets/img/whiteLogo.png" alt="ADTRIPY Logo" className="w-[200px]" />
             </div>
 
             {/* Bottom section - Description */}
@@ -116,7 +116,7 @@ export default function Register() {
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-2">
             <div className="flex justify-center">
-              <img src="/src/assets/img/logoAdtripy.png" alt="ADTRIPY Logo" className="w-[250px] h-full object-cover" />
+              <img src="./assets/img/logoAdtripy.png" alt="ADTRIPY Logo" className="w-[250px] h-full object-cover" />
             </div>
             <p className="text-gray-600">
               Already have an account?{" "}
