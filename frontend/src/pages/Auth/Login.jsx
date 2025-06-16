@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuthStore } from "../../store/AuthStore";
@@ -40,7 +38,7 @@ export default function Login() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <img
-            src="/assets/img/bggreen.jpg"
+            src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/bggreen.jpg"
             alt="Login Background"
             className="w-full h-full object-cover"
           />
@@ -58,7 +56,7 @@ export default function Login() {
             {/* Top section - Logo */}
             <div className="flex-shrink-0">
               <img
-                src="/assets/img/whiteLogo.png"
+                src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png"
                 alt="ADTRIPY Logo"
                 className="w-[200px]"
               />
@@ -118,7 +116,7 @@ export default function Login() {
           <div className="text-center space-y-2">
             <div className="flex  justify-center">
               <img
-                src="/assets/img/logoAdtripy.png"
+                src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/logoAdtripy.png"
                 alt="Login Background"
                 className="w-[250px] h-full object-cover"
               />

@@ -132,8 +132,8 @@ const BookingNavbar = () => {
               <img
                 src={
                   isScrolled
-                    ? "/src/assets/img/logoAdtripy.png"
-                    : "/src/assets/img/whiteLogo.png"
+                    ? "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/logoAdtripy.png"
+                    : "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png"
                 }
                 alt="LuxeStay Logo"
                 className="w-[140px] transition-all duration-300"

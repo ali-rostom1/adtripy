@@ -379,7 +379,7 @@ export default function EnhancedLandingPage() {
       <section className="min-h-screen bg-black text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <video autoPlay loop muted playsInline className="w-screen h-screen object-cover object-center">
-            <source src="/assets/video/videoBg.mp4" type="video/mp4" />
+            <source src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/videoBg.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black/30 sm:bg-black/25 lg:bg-black/30"></div>
@@ -543,7 +543,7 @@ export default function EnhancedLandingPage() {
       <section
         className="py-24 px-4 md:px-8 lg:px-16 relative bg-cover bg-no-repeat overflow-hidden"
         style={{
-          backgroundImage: "url('/src/assets/img/homeBg.jpg')",
+          backgroundImage: "url('https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/homeBg.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-white/90"></div>
@@ -634,7 +634,7 @@ export default function EnhancedLandingPage() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-green-600/10 to-transparent rounded-3xl"></div>
                 <img
-                  src="/src/assets/img/exp.jpg"
+                  src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/exp.jpg"
                   alt="Modern office interior"
                   className="w-full h-[500px] object-cover rounded-3xl shadow-2xl transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-3xl"
                 />
@@ -647,7 +647,7 @@ export default function EnhancedLandingPage() {
             <div className="col-span-12 lg:col-span-5 space-y-6">
               <div className="relative group scroll-reveal">
                 <img
-                  src="/src/assets/img/sahra2.jpg"
+                  src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/sahra2.jpg"
                   alt="Modern building exterior"
                   className="w-full h-[240px] object-cover rounded-2xl shadow-xl transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-2xl"
                 />
@@ -655,7 +655,7 @@ export default function EnhancedLandingPage() {
               </div>
               <div className="relative group scroll-reveal">
                 <img
-                  src="/src/assets/img/picine.jpg"
+                  src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/picine.jpg"
                   alt="Modern architecture"
                   className="w-full h-[240px] object-cover rounded-2xl shadow-xl transition-all duration-700 group-hover:scale-[1.02] group-hover:shadow-2xl"
                 />
@@ -913,7 +913,7 @@ export default function EnhancedLandingPage() {
               <div className="relative group">
                 <div className="absolute inset-0 bg-gradient-to-br from-green-500/20 to-transparent rounded-3xl transform rotate-3"></div>
                 <img
-                  src="/src/assets/img/exp1.jpg"
+                  src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/exp1.jpg"
                   alt="Become a Host"
                   className="relative w-full object-cover rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-700"
                 />
@@ -957,7 +957,7 @@ export default function EnhancedLandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-20">
             {[
               {
-                image: "/src/assets/img/exp1.jpg",
+                image: "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/exp1.jpg",
                 title: "Premium Experiences",
                 description:
                   "Creating unforgettable moments with event agencies and experience curators who define luxury in their respective fields.",
@@ -965,7 +965,7 @@ export default function EnhancedLandingPage() {
                 delay: "delay-100",
               },
               {
-                image: "/src/assets/img/cars.jpg",
+                image: "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/cars.jpg",
                 title: "Automotive Excellence",
                 description:
                   "Partnering with luxury car dealerships and automotive brands to create exceptional digital experiences that drive performance.",
@@ -973,7 +973,7 @@ export default function EnhancedLandingPage() {
                 delay: "delay-300",
               },
               {
-                image: "/src/assets/img/hotel1.jpg",
+                image: "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/hotel1.jpg",
                 title: "Luxury Hospitality",
                 description:
                   "Elevating hospitality brands with sophisticated digital solutions and seamless booking experiences that exceed expectations.",
@@ -1159,7 +1159,7 @@ export default function EnhancedLandingPage() {
                     icon: "office",
                     title: "Visit Our Office",
                     content: "123 Business District\nPremium Tower, Floor 15\nNew York, NY 10001",
-                    image: "/src/assets/img/office.webp",
+                    image: "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/office.webp",
                   },
                   {
                     icon: "phone",
@@ -1281,7 +1281,7 @@ export default function EnhancedLandingPage() {
                 <div className="mb-8">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="w-12 h-px bg-gradient-to-r from-green-600 to-transparent"></div>
-                    <img src="/src/assets/img/whiteLogo.png" alt="adtripy Logo" className="w-[200px]" />
+                    <img src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png" alt="adtripy Logo" className="w-[200px]" />
                   </div>
                   <div className="w-20 h-px bg-green-600 mb-6"></div>
                 </div>
