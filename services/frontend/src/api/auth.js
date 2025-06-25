@@ -31,3 +31,8 @@ export const sendVerificationCode = (phone) =>
 
 export const verifyPhone = (phone, code) => 
   api.post("/v1/verify-phone", { phone, code });
+
+export const updateUserInfo = (data) => 
+  api.post("/v1/profile/update", data);
+
+

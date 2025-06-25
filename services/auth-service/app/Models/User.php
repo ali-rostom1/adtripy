@@ -18,10 +18,23 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'id',
+        'firstName',
+        'lastName',
         'email',
         'password',
+        'phone',
+        'birth_date',
+        'city',
+        'country',
+        'last_seen_at',
+        'pfp_path',
+        'email_verified_at',
+        'phone_verified_at',
     ];
+    protected $appends = ['age'];
+    protected $keyType = 'string';
+    public $incrementing = false;
 
     /**
      * The attributes that should be hidden for serialization.
@@ -32,6 +45,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+     public function getJWTCustomClaims()
+    {
+        return [];
+    }
 
     /**
      * Get the attributes that should be cast.
@@ -42,7 +63,19 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'phone_verified_at' => 'datetime',
+            'last_seen_at' => 'datetime',
+            'birth_date' => 'date'
         ];
+    }
+
+    public function getAgeAttribute(){
+        if(!$this->birth_date){
+           return null; 
+        }
+        return Carbon::parse($this->birth_date)->age;
+    }
+    public function name(){
+        return trim($this->firstName . ' ' . $this->lastName);
     }
 }
