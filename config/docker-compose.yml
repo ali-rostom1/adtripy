@@ -1,0 +1,155 @@
+services:
+  # 🧠 AUTH service
+  auth-service:
+    build:
+      context: ../services/auth-service
+    container_name: auth-service
+    volumes:
+      - ../services/auth-service:/var/www
+    expose:
+      - "9000"
+    environment:
+      - APP_KEY=${AUTH_APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=auth-db
+      - DB_PORT=3306
+      - DB_DATABASE=${AUTH_DB_NAME}
+      - DB_USERNAME=${AUTH_DB_USER}
+      - DB_PASSWORD=${AUTH_DB_PASS}
+      - JWT_SECRET=${AUTH_JWT_SECRET}
+    networks:
+      app-network:
+        aliases:
+          - php
+
+  nginx-auth:
+    image: nginx:stable
+    container_name: nginx-auth
+    volumes:
+      - ../services/auth-service:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8443:80"
+    depends_on:
+      - auth-service
+    networks:
+      - app-network
+
+  auth-db:
+    image: mysql:8
+    container_name: auth-db
+    environment:
+      MYSQL_DATABASE: ${AUTH_DB_NAME}
+      MYSQL_USER: ${AUTH_DB_USER}
+      MYSQL_PASSWORD: ${AUTH_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${AUTH_DB_ROOT}
+    volumes:
+      - auth-db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # 📚 BOOKING service
+  booking-service:
+    build:
+      context: ../services/booking-service
+    container_name: booking-service
+    volumes:
+      - ../services/booking-service:/var/www
+    expose:
+      - "9000"
+    environment:
+      - APP_KEY=${BOOKING_APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=booking-db
+      - DB_PORT=3306
+      - DB_DATABASE=${BOOKING_DB_NAME}
+      - DB_USERNAME=${BOOKING_DB_USER}
+      - DB_PASSWORD=${BOOKING_DB_PASS}
+      - JWT_SECRET=${AUTH_JWT_SECRET}
+    networks:
+      app-network:
+        aliases:
+          - php
+
+  nginx-booking:
+    image: nginx:stable
+    container_name: nginx-booking
+    volumes:
+      - ../services/booking-service:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/certs:/etc/nginx/ssl
+    ports:
+      - "8444:80"
+    networks:
+      - app-network
+
+  booking-db:
+    image: mysql:8
+    container_name: booking-db
+    environment:
+      MYSQL_DATABASE: ${BOOKING_DB_NAME}
+      MYSQL_USER: ${BOOKING_DB_USER}
+      MYSQL_PASSWORD: ${BOOKING_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${BOOKING_DB_ROOT}
+    volumes:
+      - booking-db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+  # 💳 PAYMENT service
+  payment-service:
+    build:
+      context: ../services/payment-service
+    container_name: payment-service
+    volumes:
+      - ../services/payment-service:/var/www
+    expose:
+      - "9000"
+    environment:
+      - APP_KEY=${PAYMENT_APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=payment-db
+      - DB_PORT=3306
+      - DB_DATABASE=${PAYMENT_DB_NAME}
+      - DB_USERNAME=${PAYMENT_DB_USER}
+      - DB_PASSWORD=${PAYMENT_DB_PASS}
+      - JWT_SECRET=${AUTH_JWT_SECRET}
+    networks:
+      app-network:
+        aliases:
+          - php
+
+  nginx-payment:
+    image: nginx:stable
+    container_name: nginx-payment
+    volumes:
+      - ../services/payment-service:/var/www
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8445:80"
+    depends_on:
+      - payment-service
+    networks:
+      - app-network
+
+  payment-db:
+    image: mysql:8
+    container_name: payment-db
+    environment:
+      MYSQL_DATABASE: ${PAYMENT_DB_NAME}
+      MYSQL_USER: ${PAYMENT_DB_USER}
+      MYSQL_PASSWORD: ${PAYMENT_DB_PASS}
+      MYSQL_ROOT_PASSWORD: ${PAYMENT_DB_ROOT}
+    volumes:
+      - payment-db-data:/var/lib/mysql
+    networks:
+      - app-network
+
+volumes:
+  auth-db-data:
+  booking-db-data:
+  payment-db-data:
+
+networks:
+  app-network:
+    driver: bridge
