@@ -21,4 +21,14 @@
 /vendor
 Homestead.json
 Homestead.yaml
+<<<<<<< HEAD
 Thumbs.db
+=======
+<<<<<<< HEAD
+npm-debug.log
+Thumbs.db
+yarn-error.log
+=======
+Thumbs.db
+>>>>>>> 52bc2537473c219474860525ca75fa3dc1c89343
+>>>>>>> b427e14 (fix issues)

@@ -5,6 +5,7 @@ import {
   register as registerApi,
   refreshToken as refreshApi,
   logout as logoutApi,
+  updateUserInfo,
 } from "../api/auth";
 
 export const useAuthStore = create(
@@ -79,10 +80,10 @@ export const useAuthStore = create(
       // Logout action
       logout: async () => {
         try {
-          const token = get().token; 
-          await logoutApi(token); 
-          set({ user: null, token: null, refreshToken: null }); 
-          localStorage.removeItem("auth-storage"); 
+          const token = get().token;
+          await logoutApi(token);
+          set({ user: null, token: null, refreshToken: null });
+          localStorage.removeItem("auth-storage");
         } catch (error) {
           console.error("Logout failed:", error);
         }
@@ -96,6 +97,25 @@ export const useAuthStore = create(
 
       // Clear errors
       clearError: () => set({ error: null }),
+
+      // Update user information
+      updateUser: async (updatedData) => {
+        const token = get().token; // Get the token from the store
+        if (!token) throw new Error("User is not authenticated");
+
+        set({ isLoading: true, error: null });
+        try {
+          const response = await updateUserInfo(updatedData);
+          set({ user: response.data.user, isLoading: false });
+          return response.data;
+        } catch (error) {
+          set({
+            isLoading: false,
+            error: error.response?.data?.message || "Update failed",
+          });
+          throw error;
+        }
+      },
     }),
     {
       name: "auth-storage", // Name of the localStorage key

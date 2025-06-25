@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AuthProvider from "./components/AuthProvider";
 import { useAuthStore } from "./store/AuthStore";
 import "./index.css";
+import UpdateInformations from "./pages/guest/guestProfile/updateInformations";
 
 function App() {
   const { user } = useAuthStore();
@@ -46,8 +47,15 @@ function App() {
               </PrivateRoute>
             }
           />
-
-  
+          <Route
+            path="/update-informations"
+            element={
+              <PrivateRoute>
+                <UpdateInformations />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/profile/update" element={<UpdateInformations />} />
 
           {/* Redirect to guest page or login */}
           <Route

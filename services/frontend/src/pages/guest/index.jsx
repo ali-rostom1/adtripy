@@ -379,7 +379,7 @@ export default function EnhancedLandingPage() {
       <section className="min-h-screen bg-black text-white relative overflow-hidden">
         <div className="absolute inset-0">
           <video autoPlay loop muted playsInline className="w-screen h-screen object-cover object-center">
-            <source src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/videoBg.mp4" type="video/mp4" />
+            <source src="/assets/video/videoBg.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="absolute inset-0 bg-black/30 sm:bg-black/25 lg:bg-black/30"></div>
