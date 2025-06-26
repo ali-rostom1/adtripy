@@ -2,81 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Accommodation;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\StoreStayRequest;
+use App\Http\Requests\UpdateStayRequest;
+use App\Models\Stay;
+use Illuminate\Http\JsonResponse;
 
 class StayController extends Controller
 {
-    public function store(Request $request)
+    // GET /api/stays
+    public function index(): JsonResponse
     {
-        // Debug incoming request
-        Log::info('[STAYS] Received request data:', [
-            'has_user_id' => $request->has('user_id'),
-            'user_id' => $request->user_id ?? 'NULL',
-            'method' => $request->method(),
-            'content_type' => $request->header('Content-Type'),
-            'all_data' => $request->all()
-        ]);
+        $stays = Stay::with(['location', 'category', 'amenities', 'media'])
+                     ->paginate(15);
 
-        // Validate with explicit user_id requirement
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price_per_night' => 'required|numeric',
-            'max_guests' => 'required|integer',
-            'location_id' => 'required|exists:locations,id',
-            'category_id' => 'required|exists:categories,id',
-            'amenities' => 'nullable|array',
-            'media' => 'nullable|array',
-        ]);
+        return response()->json($stays);
+    }
 
-        if ($validator->fails()) {
-            Log::error('[STAYS] Validation failed:', [
-                'errors' => $validator->errors()->toArray()
-            ]);
-            return response()->json([
-                'message' => $validator->errors()->first(),
-                'errors' => $validator->errors()
-            ], 422);
+    // POST /api/stays
+    public function store(StoreStayRequest $request): JsonResponse
+    {
+        $data = $request->validated();
+
+        // create main record
+        $stay = Stay::create($data);
+
+        // attach amenities if present
+        if (!empty($data['amenities'])) {
+            $stay->amenities()->sync($data['amenities']);
         }
 
-        $validated = $validator->validated();
-        Log::info('[STAYS] Validated data:', ['user_id' => $validated['user_id']]);
-
-        try {
-            $accommodation = Accommodation::create([
-                'user_id' => $validated['user_id'],
-                'title' => $validated['title'],
-                'description' => $validated['description'],
-                'price_per_night' => $validated['price_per_night'],
-                'max_guests' => $validated['max_guests'],
-                'location_id' => $validated['location_id'],
-                'category_id' => $validated['category_id'],
-                'amenities' => isset($validated['amenities']) ? json_encode($validated['amenities']) : null,
-                'media' => isset($validated['media']) ? json_encode($validated['media']) : null,
-            ]);
-
-            Log::info('[STAYS] Accommodation created successfully:', [
-                'id' => $accommodation->id,
-                'user_id' => $accommodation->user_id
-            ]);
-
-            return response()->json([
-                'message' => 'Accommodation created successfully!',
-                'data' => $accommodation
-            ], 201);
-        } catch (\Exception $e) {
-            Log::error('[STAYS] Error creating accommodation:', [
-                'error' => $e->getMessage(),
-                'user_id_was' => $validated['user_id'] ?? null
-            ]);
-            
-            return response()->json([
-                'message' => 'Failed to create accommodation: ' . $e->getMessage(),
-                'error' => $e->getMessage()
-            ], 500);
+        // add media if present
+        if (!empty($data['media'])) {
+            foreach ($data['media'] as $item) {
+                $stay->media()->create($item);
+            }
         }
+
+        // reload relations
+        $stay->load(['location', 'category', 'amenities', 'media']);
+
+        return response()->json($stay, 201);
+    }
+
+    // GET /api/stays/{stay}
+    public function show(Stay $stay): JsonResponse
+    {
+        $stay->load(['location', 'category', 'amenities', 'media']);
+        return response()->json($stay);
+    }
+
+    // PUT/PATCH /api/stays/{stay}
+    public function update(UpdateStayRequest $request, Stay $stay): JsonResponse
+    {
+        $data = $request->validated();
+
+        $stay->update($data);
+
+        // sync amenities if provided
+        if (array_key_exists('amenities', $data)) {
+            $stay->amenities()->sync($data['amenities'] ?? []);
+        }
+
+        // replace media if provided
+        if (array_key_exists('media', $data)) {
+            $stay->media()->delete();
+            foreach ($data['media'] ?? [] as $item) {
+                $stay->media()->create($item);
+            }
+        }
+
+        $stay->load(['location', 'category', 'amenities', 'media']);
+        return response()->json($stay);
+    }
+
+    // DELETE /api/stays/{stay}
+    public function destroy(Stay $stay): JsonResponse
+    {
+        $stay->delete();
+        return response()->json(null, 204);
     }
 }
