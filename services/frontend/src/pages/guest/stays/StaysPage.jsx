@@ -16,18 +16,29 @@ export default function StaysPage() {
     fetchStays();
   }, []);
 
+  // Update the fetchStays function with better error handling
   const fetchStays = async (page = 1) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/stays`, {
+      console.log(`Fetching stays from: ${import.meta.env.VITE_STAYS_API_URL}/api/stays`);
+      
+      const response = await axios.get(`${import.meta.env.VITE_STAYS_API_URL}/api/stays`, {
         params: { page },
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('auth-storage') ? 
-            JSON.parse(localStorage.getItem('auth-storage')).state.token : ''}`
-        }
       });
       
-      setStays(response.data.data || response.data);
+      console.log('Stays API response:', response.data);
+      
+      // Handle different response formats
+      if (response.data.data) {
+        setStays(response.data.data);
+        console.log('Parsed stays from response.data.data:', response.data.data);
+      } else if (Array.isArray(response.data)) {
+        setStays(response.data);
+        console.log('Parsed stays from array:', response.data);
+      } else {
+        setStays([response.data]);
+        console.log('Parsed single stay:', response.data);
+      }
       
       // Set pagination if available
       if (response.data.current_page) {
@@ -41,7 +52,13 @@ export default function StaysPage() {
       setLoading(false);
     } catch (err) {
       console.error('Error fetching stays:', err);
-      setError('Failed to load stays. Please try again later.');
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      
+      setError(`Failed to load stays: ${err.response?.data?.message || err.message || 'Unknown error'}`);
       setLoading(false);
     }
   };
