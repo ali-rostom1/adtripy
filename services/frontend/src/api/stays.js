@@ -48,8 +48,19 @@ export const createStay = (stayData) => {
 };
 
 // Update a stay
-export const updateStay = (id, stayData) => 
-  staysClient.put(`/stays/${id}`, stayData);
+export const updateStay = (id, stayData) => {
+  // Clone the data to avoid modifying the original
+  const formattedData = { ...stayData };
+  
+  // If using 'amenities' but backend expects 'amenity_ids'
+  if (formattedData.amenities) {
+    formattedData.amenity_ids = formattedData.amenities;
+    delete formattedData.amenities;
+  }
+  
+  console.log('Formatted data for API:', formattedData);
+  return staysClient.put(`/stays/${id}`, formattedData);
+};
 
 // Delete a stay
 export const deleteStay = (id) => 
