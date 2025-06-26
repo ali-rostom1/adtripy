@@ -1,47 +1,56 @@
-import axios from 'axios';
-import { API_URL } from '../config';
+import staysClient from './staysClient';
 
-// Axios instance for stays service
-const staysApi = axios.create({
-  baseURL: `${API_URL}/stays-service/api`,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+// Get all stays
+export const getStays = (page = 1) => 
+  staysClient.get('/stays', { params: { page } });
 
-// Add request interceptor to include auth token
-staysApi.interceptors.request.use(
-  (config) => {
-    const token = JSON.parse(localStorage.getItem('auth-storage'))?.state?.token;
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Get a specific stay
+export const getStayById = (id) => 
+  staysClient.get(`/stays/${id}`);
 
-// Get all stays with optional pagination
-export const getStays = async (page = 1) => {
-  return await staysApi.get('/stays', { params: { page } });
+// Create a new stay with proper content type for file uploads if needed
+export const createStay = (stayData) => {
+  // If stayData contains files, use FormData
+  if (stayData.media && stayData.media.length > 0) {
+    const formData = new FormData();
+    
+    // Add all text fields
+    Object.keys(stayData).forEach(key => {
+      if (key !== 'media' && key !== 'location' && key !== 'amenity_ids') {
+        formData.append(key, stayData[key]);
+      }
+    });
+    
+    // Add location fields
+    Object.keys(stayData.location).forEach(key => {
+      formData.append(`location[${key}]`, stayData.location[key]);
+    });
+    
+    // Add amenities
+    stayData.amenity_ids.forEach((id, index) => {
+      formData.append(`amenity_ids[${index}]`, id);
+    });
+    
+    // Add media files
+    stayData.media.forEach((file, index) => {
+      formData.append(`media[${index}]`, file);
+    });
+    
+    return staysClient.post('/stays', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  }
+  
+  // If no files, send as JSON
+  return staysClient.post('/stays', stayData);
 };
 
-// Get a single stay by ID
-export const getStayById = async (id) => {
-  return await staysApi.get(`/stays/${id}`);
-};
-
-// Create a new stay
-export const createStay = async (stayData) => {
-  return await staysApi.post('/stays', stayData);
-};
-
-// Update an existing stay
-export const updateStay = async (id, stayData) => {
-  return await staysApi.put(`/stays/${id}`, stayData);
-};
+// Update a stay
+export const updateStay = (id, stayData) => 
+  staysClient.put(`/stays/${id}`, stayData);
 
 // Delete a stay
-export const deleteStay = async (id) => {
-  return await staysApi.delete(`/stays/${id}`);
-};
+export const deleteStay = (id) => 
+  staysClient.delete(`/stays/${id}`);

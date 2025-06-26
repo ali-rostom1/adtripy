@@ -1,25 +1,56 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useStaysStore } from '../../store/StaysStore';
+import axios from 'axios';
 
 export default function StaysPage() {
-  const { 
-    stays, 
-    isLoading, 
-    error, 
-    pagination,
-    fetchStays 
-  } = useStaysStore();
+  const [stays, setStays] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalItems: 0
+  });
 
   useEffect(() => {
     fetchStays();
-  }, [fetchStays]);
+  }, []);
+
+  const fetchStays = async (page = 1) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/stays`, {
+        params: { page },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('auth-storage') ? 
+            JSON.parse(localStorage.getItem('auth-storage')).state.token : ''}`
+        }
+      });
+      
+      setStays(response.data.data || response.data);
+      
+      // Set pagination if available
+      if (response.data.current_page) {
+        setPagination({
+          currentPage: response.data.current_page,
+          totalPages: response.data.last_page,
+          totalItems: response.data.total
+        });
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching stays:', err);
+      setError('Failed to load stays. Please try again later.');
+      setLoading(false);
+    }
+  };
 
   const handlePageChange = (page) => {
     fetchStays(page);
   };
 
-  if (isLoading && stays.length === 0) {
+  if (loading && stays.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>

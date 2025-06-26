@@ -9,33 +9,48 @@ import Register from "./pages/Auth/Register";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import ResetPassword from "./pages/Auth/ResetPassword";
 import Dashboard from "./pages/Dashboard";
-import GuestPage from "./pages/guest"; // Import your guest page component
+import GuestPage from "./pages/guest"; 
 import PrivateRoute from "./components/PrivateRoute";
 import AuthProvider from "./components/AuthProvider";
 import { useAuthStore } from "./store/AuthStore";
 import "./index.css";
 import UpdateInformations from "./pages/guest/guestProfile/updateInformations";
 
+// Import the stays pages
+import StaysPage from "./pages/guest/stays/StaysPage";
+import StayDetailPage from "./pages/guest/stays/StayDetailPage";
+import CreateStayPage from "./pages/guest/stays/CreateStayPage";
+import EditStayPage from "./pages/guest/stays/EditStayPage";
+
 function App() {
-  const { user } = useAuthStore();
+  // Get user and token to check for authentication
+  const { user, token } = useAuthStore();
+  
+  // Check if user is authenticated
+  const isAuthenticated = !!(user && token);
 
   return (
     <Router>
       <AuthProvider>
         <Routes>
-          {/* Public routes */}
+          {/* Public routes - redirect only if authenticated */}
           <Route
             path="/login"
-            element={user ? <Navigate to="/guest" /> : <Login />}
+            element={isAuthenticated ? <Navigate to="/guest" /> : <Login />}
           />
           <Route
             path="/register"
-            element={user ? <Navigate to="/guest" /> : <Register />}
+            element={isAuthenticated ? <Navigate to="/guest" /> : <Register />}
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          
           {/* Guest route */}
-          <Route path="/guest" element={<GuestPage />} />
+          <Route 
+            path="/guest" 
+            element={isAuthenticated ? <GuestPage /> : <Navigate to="/login" />} 
+          />
+          
           {/* Protected routes */}
           <Route
             path="/dashboard"
@@ -53,22 +68,25 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/profile/update" element={<UpdateInformations />} />
+          <Route 
+            path="/profile/update" 
+            element={isAuthenticated ? <UpdateInformations /> : <Navigate to="/login" />} 
+          />
+          
+          {/* Stays routes - PUBLIC, no authentication required */}
+          <Route path="/stays" element={<StaysPage />} />
+          <Route path="/stays/create" element={<CreateStayPage />} />
+          <Route path="/stays/edit/:id" element={<EditStayPage />} />
+          <Route path="/stays/:id" element={<StayDetailPage />} />
+          
           {/* Redirect to guest page or login */}
           <Route
             path="/"
-            element={user ? <Navigate to="/guest" /> : <Navigate to="/login" />}
+            element={isAuthenticated ? <Navigate to="/guest" /> : <Navigate to="/login" />}
           />
+          
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
-
-
-
-         {/* Stays routes */}
-          <Route path="/stays" element={<StaysPage />} />
-          <Route path="/stays/:id" element={<StayDetailPage />} />
-          <Route path="/stays/create" element={<CreateStayPage />} />
-          <Route path="/stays/edit/:id" element={<EditStayPage />} />
         </Routes>
       </AuthProvider>
     </Router>
