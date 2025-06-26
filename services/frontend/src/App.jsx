@@ -34,10 +34,8 @@ function App() {
           />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-
           {/* Guest route */}
           <Route path="/guest" element={<GuestPage />} />
-
           {/* Protected routes */}
           <Route
             path="/dashboard"
@@ -56,15 +54,21 @@ function App() {
             }
           />
           <Route path="/profile/update" element={<UpdateInformations />} />
-
           {/* Redirect to guest page or login */}
           <Route
             path="/"
             element={user ? <Navigate to="/guest" /> : <Navigate to="/login" />}
           />
-
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
+
+
+
+         {/* Stays routes */}
+          <Route path="/stays" element={<StaysPage />} />
+          <Route path="/stays/:id" element={<StayDetailPage />} />
+          <Route path="/stays/create" element={<CreateStayPage />} />
+          <Route path="/stays/edit/:id" element={<EditStayPage />} />
         </Routes>
       </AuthProvider>
     </Router>

@@ -1,0 +1,112 @@
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useStaysStore } from '../../store/StaysStore';
+
+export default function StaysPage() {
+  const { 
+    stays, 
+    isLoading, 
+    error, 
+    pagination,
+    fetchStays 
+  } = useStaysStore();
+
+  useEffect(() => {
+    fetchStays();
+  }, [fetchStays]);
+
+  const handlePageChange = (page) => {
+    fetchStays(page);
+  };
+
+  if (isLoading && stays.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
+  if (error && stays.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-red-500">{error}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-semibold text-gray-800">Explore Stays</h1>
+        <Link
+          to="/stays/create"
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-300"
+        >
+          Add New Stay
+        </Link>
+      </div>
+
+      {stays.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-600 text-lg">No stays found. Add your first stay!</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {stays.map((stay) => (
+            <div 
+              key={stay.id} 
+              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition duration-300"
+            >
+              {stay.media && stay.media.length > 0 ? (
+                <img 
+                  src={stay.media[0].url} 
+                  alt={stay.title} 
+                  className="w-full h-56 object-cover"
+                />
+              ) : (
+                <div className="w-full h-56 bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400">No image available</span>
+                </div>
+              )}
+              <div className="p-5">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">{stay.title}</h2>
+                <p className="text-gray-600 mb-4 line-clamp-2">{stay.description}</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-green-600 font-bold">${stay.price_per_night}/night</span>
+                  <Link 
+                    to={`/stays/${stay.id}`}
+                    className="text-green-600 hover:text-green-800 font-medium"
+                  >
+                    View Details
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {pagination.totalPages > 1 && (
+        <div className="flex justify-center mt-8">
+          <nav className="flex space-x-2">
+            {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`px-4 py-2 rounded ${
+                  pagination.currentPage === page
+                    ? 'bg-green-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </nav>
+        </div>
+      )}
+    </div>
+  );
+}
