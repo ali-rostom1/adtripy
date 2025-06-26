@@ -2,47 +2,83 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreStayRequest;
+use App\Http\Requests\UpdateStayRequest;
+use App\Models\Stay;
+use Illuminate\Http\JsonResponse;
 
 class StayController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    // GET /api/stays
+    public function index(): JsonResponse
     {
-        //
+        $stays = Stay::with(['location', 'category', 'amenities', 'media'])
+                     ->paginate(15);
+
+        return response()->json($stays);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    // POST /api/stays
+    public function store(StoreStayRequest $request): JsonResponse
     {
-        //
+        $data = $request->validated();
+
+        // create main record
+        $stay = Stay::create($data);
+
+        // attach amenities if present
+        if (!empty($data['amenities'])) {
+            $stay->amenities()->sync($data['amenities']);
+        }
+
+        // add media if present
+        if (!empty($data['media'])) {
+            foreach ($data['media'] as $item) {
+                $stay->media()->create($item);
+            }
+        }
+
+        // reload relations
+        $stay->load(['location', 'category', 'amenities', 'media']);
+
+        return response()->json($stay, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // GET /api/stays/{stay}
+    public function show(Stay $stay): JsonResponse
     {
-        //
+        $stay->load(['location', 'category', 'amenities', 'media']);
+        return response()->json($stay);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // PUT/PATCH /api/stays/{stay}
+    public function update(UpdateStayRequest $request, Stay $stay): JsonResponse
     {
-        //
+        $data = $request->validated();
+
+        $stay->update($data);
+
+        // sync amenities if provided
+        if (array_key_exists('amenities', $data)) {
+            $stay->amenities()->sync($data['amenities'] ?? []);
+        }
+
+        // replace media if provided
+        if (array_key_exists('media', $data)) {
+            $stay->media()->delete();
+            foreach ($data['media'] ?? [] as $item) {
+                $stay->media()->create($item);
+            }
+        }
+
+        $stay->load(['location', 'category', 'amenities', 'media']);
+        return response()->json($stay);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // DELETE /api/stays/{stay}
+    public function destroy(Stay $stay): JsonResponse
     {
-        //
+        $stay->delete();
+        return response()->json(null, 204);
     }
 }

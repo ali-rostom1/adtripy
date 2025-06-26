@@ -6,23 +6,29 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreStayRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        // we assume auth + permissions done upstream
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'host_id' => 'required|integer',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price_per_night' => 'required|numeric|min:0',
+            'max_guests' => 'required|integer|min:1',
+            'location_id' => 'required|exists:locations,id',
+            'category_id' => 'required|exists:categories,id',
+            'amenities' => 'nullable|array',
+            'amenities.*' => 'integer|exists:amenities,id',
+            'media' => 'nullable|array',
+            'media.*.url' => 'required_with:media|url',
+            'media.*.type' => 'in:image,video',
+            'media.*.sort_order' => 'integer|min:0',
         ];
     }
 }
+// This request class validates the data for creating a new stay.
