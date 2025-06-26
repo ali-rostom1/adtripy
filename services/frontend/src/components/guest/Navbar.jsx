@@ -49,13 +49,32 @@ const BookingNavbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  // Update the handleLogout function
   const handleLogout = async () => {
     try {
-      await logout(); // Call the logout action from AuthStore
-      window.location.href = "/login"; // Redirect to login page
+      // Call the logout action from AuthStore
+      await logout();
+
+      // Force clear localStorage
+      localStorage.removeItem("auth-storage");
+
+      // Clear any session/cookie data if applicable
+      document.cookie.split(";").forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      });
+
+      // Redirect to login page with a hard refresh
+      window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed:", error);
-      alert("Failed to log out. Please try again.");
+
+      // Even if API logout fails, force clear auth data
+      localStorage.removeItem("auth-storage");
+
+      // Force refresh the page
+      window.location.reload();
     }
   };
 
@@ -271,7 +290,7 @@ const BookingNavbar = () => {
                 <DropdownItem href="#">Español (EUR)</DropdownItem>
                 <DropdownItem href="#">Deutsch (EUR)</DropdownItem>
               </DropdownMenu>
-          
+
               <DropdownMenu
                 trigger={
                   <>

@@ -74,4 +74,12 @@ Route::prefix('v1')->group(function () {
     //Other Profiles routes
     Route::get('/profile/host/{id}', [HostProfileController::class, 'show']);
 
+
+
+
 });
+
+
+
+
+

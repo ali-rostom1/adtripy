@@ -28,19 +28,49 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError("")
-    setSuccess("")
     setLoading(true)
+    setError("")
+
+    // Validate password match
+    if (formData.password !== formData.password_confirmation) {
+      setError("Passwords don't match")
+      setLoading(false)
+      return
+    }
+
+    // Log important information
+    console.log("Auth API URL:", import.meta.env.VITE_AUTH_API_URL)
+    console.log(
+      "Full registration endpoint:",
+      `${import.meta.env.VITE_AUTH_API_URL}/api/v1/register`
+    )
+    console.log("Registration data:", formData)
 
     try {
-      const response = await register(formData)
-      setSuccess("Registration successful! Please check your email to verify your account.")
-      setTimeout(() => {
-        navigate("/login")
-      }, 3000)
+      // Make direct fetch request for debugging
+      const response = await fetch(
+        `${import.meta.env.VITE_AUTH_API_URL}/api/v1/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      )
+
+      const data = await response.json()
+      console.log("Registration response:", data)
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed")
+      }
+
+      // If successful, navigate to guest page
+      navigate("/guest")
     } catch (err) {
       console.error("Registration error:", err)
-      setError(err.response?.data?.message || "Registration failed")
+      setError(err.message || "Registration failed. Please try again later.")
     } finally {
       setLoading(false)
     }
@@ -52,7 +82,11 @@ export default function Register() {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden rounded-r-full">
         {/* Background Image */}
         <div className="absolute inset-0">
-          <img src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/bggreen.jpg" alt="Register Background" className="w-full h-full object-cover" />
+          <img
+            src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/bggreen.jpg"
+            alt="Register Background"
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div className="absolute inset-0 bg-black/20">
@@ -66,18 +100,25 @@ export default function Register() {
           <div className="flex flex-col gap-4 h-full p-12">
             {/* Top section - Logo */}
             <div className="flex-shrink-0">
-              <img src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png" alt="ADTRIPY Logo" className="w-[200px]" />
+              <img
+                src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png"
+                alt="ADTRIPY Logo"
+                className="w-[200px]"
+              />
             </div>
 
             {/* Bottom section - Description */}
             <div className="flex-shrink-0 bg-black/30 border border-white p-4 max-w-lg">
-              <p className="text-white text-7xl font-light">Join our community today.</p>
+              <p className="text-white text-7xl font-light">
+                Join our community today.
+              </p>
             </div>
 
             {/* Bottom section - Description */}
             <div className="flex-shrink-0 p-4 max-w-lg">
               <p className="text-white text-2xl font-light">
-                Create an account to unlock exclusive deals, faster bookings, and personalized travel inspiration.
+                Create an account to unlock exclusive deals, faster bookings, and
+                personalized travel inspiration.
               </p>
             </div>
 
@@ -116,29 +157,45 @@ export default function Register() {
         <div className="w-full max-w-md space-y-6">
           <div className="text-center space-y-2">
             <div className="flex justify-center">
-              <img src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/logoAdtripy.png" alt="ADTRIPY Logo" className="w-[250px] h-full object-cover" />
+              <img
+                src="https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/logoAdtripy.png"
+                alt="ADTRIPY Logo"
+                className="w-[250px] h-full object-cover"
+              />
             </div>
             <p className="text-gray-600">
               Already have an account?{" "}
-              <Link to="/login" className="text-green-600 hover:text-green-700 font-medium">
+              <Link
+                to="/login"
+                className="text-green-600 hover:text-green-700 font-medium"
+              >
                 Sign in here
               </Link>
             </p>
           </div>
 
           {/* Error Message */}
-          {error && <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">{error}</div>}
+          {error && (
+            <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
 
           {/* Success Message */}
           {success && (
-            <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">{success}</div>
+            <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-lg">
+              {success}
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label htmlFor="firstName" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="firstName"
+                  className="text-sm font-medium text-gray-700"
+                >
                   First Name
                 </label>
                 <div className="relative">
@@ -157,7 +214,10 @@ export default function Register() {
               </div>
 
               <div className="space-y-2">
-                <label htmlFor="lastName" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="lastName"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Last Name
                 </label>
                 <div className="relative">
@@ -238,14 +298,21 @@ export default function Register() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>
 
             {/* Confirm Password Field */}
             <div className="space-y-2">
-              <label htmlFor="password_confirmation" className="text-sm font-medium text-gray-700">
+              <label
+                htmlFor="password_confirmation"
+                className="text-sm font-medium text-gray-700"
+              >
                 Confirm Password
               </label>
               <div className="relative">
@@ -266,7 +333,11 @@ export default function Register() {
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  {showConfirmPassword ? (
+                    <EyeOff className="h-4 w-4" />
+                  ) : (
+                    <Eye className="h-4 w-4" />
+                  )}
                 </button>
               </div>
             </div>

@@ -43,14 +43,43 @@ export const useAuthStore = create(
       register: async (userData) => {
         set({ isLoading: true, error: null });
         try {
+          console.log("Registration data:", userData);
+          console.log("API URL:", import.meta.env.VITE_AUTH_API_URL);
+
           const response = await registerApi(userData);
-          set({ isLoading: false });
-          return response.data;
+          console.log("Registration successful:", response.data);
+
+          // Check if the response contains token and user data
+          if (response.data.token && response.data.user) {
+            set({
+              user: response.data.user,
+              token: response.data.token,
+              refreshToken: response.data.refresh_token || null,
+              isLoading: false,
+            });
+            return response.data;
+          } else {
+            // If the response structure is unexpected
+            console.error("Invalid response structure:", response.data);
+            set({
+              isLoading: false,
+              error:
+                "Registration succeeded but returned an unexpected response format",
+            });
+            return null;
+          }
         } catch (error) {
-          set({
-            isLoading: false,
-            error: error.response?.data?.message || "Registration failed",
-          });
+          console.error("Registration error:", error);
+          console.error("Error response:", error.response?.data);
+
+          // Get detailed error message
+          const errorMessage =
+            error.response?.data?.message ||
+            error.response?.data?.error ||
+            error.message ||
+            "Registration failed. Please try again.";
+
+          set({ isLoading: false, error: errorMessage });
           throw error;
         }
       },
@@ -81,11 +110,29 @@ export const useAuthStore = create(
       logout: async () => {
         try {
           const token = get().token;
-          await logoutApi(token);
-          set({ user: null, token: null, refreshToken: null });
-          localStorage.removeItem("auth-storage");
+          if (token) {
+            // Call the logout API
+            await logoutApi(token);
+          }
         } catch (error) {
-          console.error("Logout failed:", error);
+          console.error("Logout error:", error);
+        } finally {
+          // Reset all auth-related state
+          set(
+            {
+              user: null,
+              token: null,
+              refreshToken: null,
+              error: null,
+              isLoading: false,
+            },
+            true // true means replace state completely
+          );
+
+          // Manually remove from localStorage to fix persistence issues
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("auth-storage");
+          }
         }
       },
 
