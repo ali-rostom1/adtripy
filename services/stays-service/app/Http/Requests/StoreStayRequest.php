@@ -15,19 +15,19 @@ class StoreStayRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'host_id' => 'required|integer',
             'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'required|string',
             'price_per_night' => 'required|numeric|min:0',
             'max_guests' => 'required|integer|min:1',
-            'location_id' => 'required|exists:locations,id',
+            'bedrooms' => 'required|integer|min:0',
+            'bathrooms' => 'required|numeric|min:0',
             'category_id' => 'required|exists:categories,id',
+            'host_id' => 'required|exists:users,id',
+            'location_id' => 'required|exists:locations,id',
             'amenities' => 'nullable|array',
             'amenities.*' => 'integer|exists:amenities,id',
             'media' => 'nullable|array',
-            'media.*.url' => 'required_with:media|url',
-            'media.*.type' => 'in:image,video',
-            'media.*.sort_order' => 'integer|min:0',
+            'media.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240', // Allow image files up to 10MB
         ];
     }
 }

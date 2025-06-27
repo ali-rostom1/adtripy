@@ -1,173 +1,467 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getStayById, deleteStay } from '../../../api/stays'; // Import the updated functions
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams, useNavigate, Link } from "react-router-dom"
+import { getStayById, deleteStay } from "../../../api/stays"
+import ClassicNavbar from "../../../components/guest/Nav"
+import {
+  ChevronLeft,
+  MapPin,
+  Star,
+  Users,
+  Bed,
+  Bath,
+  Wifi,
+  Car,
+  Coffee,
+  Waves,
+  Dumbbell,
+  Wind,
+  Utensils,
+  Shield,
+  Bell,
+  Plane,
+  Wine,
+  Anchor,
+  Edit3,
+  Trash2,
+  Heart,
+  Share2,
+  Check,
+  X,
+} from "lucide-react"
 
 export default function StayDetailPage() {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [stay, setStay] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const [stay, setStay] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [isFavorite, setIsFavorite] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
 
   useEffect(() => {
     const fetchStay = async () => {
-      setLoading(true);
+      setLoading(true)
       try {
-        // Use the new API function without authentication
-        const response = await getStayById(id);
-        setStay(response.data);
+        const response = await getStayById(id)
+        setStay(response.data)
       } catch (err) {
-        console.error('Error fetching stay details:', err);
-        setError('Failed to load stay details. Please try again later.');
+        console.error("Error fetching stay details:", err)
+        setError("Failed to load stay details. Please try again later.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
     if (id) {
-      fetchStay();
+      fetchStay()
     }
-  }, [id]);
+  }, [id])
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this stay?')) {
-      return;
-    }
-    
     try {
-      // Use the new API function without authentication
-      await deleteStay(id);
-      navigate('/stays');
+      await deleteStay(id)
+      navigate("/stays")
     } catch (err) {
-      console.error('Error deleting stay:', err);
-      alert('Failed to delete stay. Please try again.');
+      console.error("Error deleting stay:", err)
+      alert("Failed to delete stay. Please try again.")
     }
-  };
+  }
+
+  const getAmenityIcon = (amenityName) => {
+    const iconMap = {
+      "High-Speed WiFi": Wifi,
+      WiFi: Wifi,
+      "Air Conditioning": Wind,
+      "Gourmet Kitchen": Utensils,
+      Kitchen: Utensils,
+      "Infinity Pool": Waves,
+      Pool: Waves,
+      "Swimming Pool": Waves,
+      "Private Spa": Wind,
+      Spa: Wind,
+      "Fitness Center": Dumbbell,
+      Gym: Dumbbell,
+      "Concierge Service": Bell,
+      "Valet Parking": Car,
+      Parking: Car,
+      "Wine Cellar": Wine,
+      "Private Beach": Anchor,
+      Helipad: Plane,
+      "Butler Service": Shield,
+      Breakfast: Coffee,
+      Restaurant: Utensils,
+    }
+
+    const IconComponent = iconMap[amenityName] || Check
+    return IconComponent
+  }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
-      </div>
-    );
+      <>
+        <ClassicNavbar />
+        <div className="min-h-screen bg-white pt-20">
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <div className="text-center">
+              <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+              <p className="text-gray-600 text-lg">Loading property details...</p>
+            </div>
+          </div>
+        </div>
+      </>
+    )
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-red-500">{error}</div>
-      </div>
-    );
+      <>
+        <ClassicNavbar />
+        <div className="min-h-screen bg-white pt-20">
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <div className="text-center max-w-md mx-auto px-4">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <X className="w-8 h-8 text-red-500" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h2>
+              <p className="text-gray-600 mb-8">{error}</p>
+              <Link
+                to="/stays"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Back to Properties
+              </Link>
+            </div>
+          </div>
+        </div>
+      </>
+    )
   }
 
   if (!stay) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="text-gray-600">Stay not found</div>
-      </div>
-    );
+      <>
+        <ClassicNavbar />
+        <div className="min-h-screen bg-white pt-20">
+          <div className="flex justify-center items-center min-h-[60vh]">
+            <div className="text-center max-w-md mx-auto px-4">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <MapPin className="w-8 h-8 text-gray-400" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">Property not found</h2>
+              <p className="text-gray-600 mb-8">The property you're looking for doesn't exist or has been removed.</p>
+              <Link
+                to="/stays"
+                className="inline-block bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5"
+              >
+                Browse Properties
+              </Link>
+            </div>
+          </div>
+        </div>
+      </>
+    )
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <Link to="/stays" className="text-green-600 hover:text-green-800 mb-2 inline-block">
-            ← Back to All Stays
-          </Link>
-          <h1 className="text-3xl font-semibold text-gray-800">{stay.title}</h1>
-        </div>
-        <div className="flex space-x-4">
-          <Link
-            to={`/stays/edit/${stay.id}`}
-            className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition duration-300"
-          >
-            Edit Stay
-          </Link>
-          <button
-            onClick={handleDelete}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition duration-300"
-          >
-            Delete Stay
-          </button>
-        </div>
-      </div>
-
-      {/* Media Gallery */}
-      <div className="mb-8">
-        {stay.media && stay.media.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {stay.media.map((item, index) => (
-              <img
-                key={index}
-                src={item.url}
-                alt={`${stay.title} - Image ${index + 1}`}
-                className="w-full h-64 object-cover rounded-lg shadow-md"
-              />
-            ))}
+    <>
+      <ClassicNavbar />
+      <div className="min-h-screen bg-white pt-20">
+        {/* Hero Section */}
+        <div className="relative">
+          {/* Back Navigation */}
+          <div className="absolute top-6 left-6 z-10">
+            <Link
+              to="/stays"
+              className="flex items-center bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-green-600 px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 group"
+            >
+              <ChevronLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200" />
+              Back to Properties
+            </Link>
           </div>
-        ) : (
-          <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-lg">
-            <span className="text-gray-400">No images available</span>
+
+          {/* Action Buttons */}
+          <div className="absolute top-6 right-6 z-10 flex space-x-3">
+            <button
+              onClick={() => setIsFavorite(!isFavorite)}
+              className={`p-3 rounded-lg backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${
+                isFavorite
+                  ? "bg-red-500 text-white hover:bg-red-600"
+                  : "bg-white/90 text-gray-700 hover:bg-white hover:text-red-500"
+              }`}
+            >
+              <Heart className={`w-5 h-5 ${isFavorite ? "fill-current" : ""}`} />
+            </button>
+            <button className="p-3 bg-white/90 backdrop-blur-sm hover:bg-white text-gray-700 hover:text-green-600 rounded-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+              <Share2 className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Image Gallery */}
+          <div className="relative h-[60vh] overflow-hidden">
+            {stay.media && stay.media.length > 0 ? (
+              <>
+                <img
+                  src={stay.media[selectedImageIndex]?.url || "/placeholder.svg?height=600&width=1200"}
+                  alt={stay.title}
+                  className="w-full h-full object-cover transition-all duration-700 hover:scale-105"
+                />
+                {stay.media.length > 1 && (
+                  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    {stay.media.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                          index === selectedImageIndex ? "bg-white scale-125" : "bg-white/60 hover:bg-white/80"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gray-300 rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <MapPin className="w-8 h-8 text-gray-500" />
+                  </div>
+                  <span className="text-gray-500 text-lg">No images available</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Left Column - Main Content */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Property Header */}
+              <div className="animate-in slide-in-from-bottom duration-500">
+                <div className="flex items-start justify-between mb-6">
+                  <div className="flex-1">
+                    <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 leading-tight">{stay.title}</h1>
+                    <div className="flex items-center space-x-4 text-gray-600">
+                      <div className="flex items-center">
+                        <Star className="w-5 h-5 text-yellow-400 fill-yellow-400 mr-1" />
+                        <span className="font-medium">4.9</span>
+                        <span className="ml-1">(127 reviews)</span>
+                      </div>
+                      <div className="flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        <span>Premium Location</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex space-x-3 ml-6">
+                    <Link
+                      to={`/stays/edit/${stay.id}`}
+                      className="flex items-center bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 group"
+                    >
+                      <Edit3 className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform duration-200" />
+                      Edit
+                    </Link>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 group"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Stats */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-gray-50 rounded-lg">
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <Users className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">{stay.max_guests}</div>
+                    <div className="text-sm text-gray-600">Guests</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <Bed className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">{stay.bedrooms || 0}</div>
+                    <div className="text-sm text-gray-600">Bedrooms</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <Bath className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">{stay.bathrooms || 0}</div>
+                    <div className="text-sm text-gray-600">Bathrooms</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
+                      <Star className="w-6 h-6 text-green-600" />
+                    </div>
+                    <div className="text-2xl font-bold text-gray-900">4.9</div>
+                    <div className="text-sm text-gray-600">Rating</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="animate-in slide-in-from-bottom duration-700 delay-200">
+                <div className="bg-white border border-gray-200 rounded-lg p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">About this place</h2>
+                  <p className="text-gray-700 leading-relaxed text-lg whitespace-pre-line">
+                    {stay.description ||
+                      "An exceptional property featuring refined amenities and impeccable attention to detail, offering guests an unparalleled experience of comfort and luxury. This stunning accommodation combines modern sophistication with timeless elegance, creating the perfect retreat for discerning travelers."}
+                  </p>
+                </div>
+              </div>
+
+              {/* Amenities */}
+              {stay.amenities && stay.amenities.length > 0 && (
+                <div className="animate-in slide-in-from-bottom duration-700 delay-300">
+                  <div className="bg-white border border-gray-200 rounded-lg p-8">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Amenities</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {stay.amenities.map((amenity, index) => {
+                        const IconComponent = getAmenityIcon(amenity.name)
+                        return (
+                          <div
+                            key={amenity.id}
+                            className="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-green-50 hover:border-green-200 border border-transparent transition-all duration-300 group"
+                            style={{ animationDelay: `${index * 100}ms` }}
+                          >
+                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-green-200 transition-colors duration-300">
+                              <IconComponent className="w-5 h-5 text-green-600" />
+                            </div>
+                            <span className="font-medium text-gray-900 group-hover:text-green-700 transition-colors duration-300">
+                              {amenity.name}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - Booking Card */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 animate-in slide-in-from-right duration-700 delay-100">
+                <div className="bg-white border border-gray-200 rounded-lg p-8 shadow-lg">
+                  <div className="text-center mb-8">
+                    <div className="text-4xl font-bold text-green-600 mb-2">
+                      ${stay.price_per_night}
+                      <span className="text-lg font-normal text-gray-600 ml-2">/ night</span>
+                    </div>
+                    <div className="flex items-center justify-center text-sm text-gray-600">
+                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400 mr-1" />
+                      <span className="font-medium">4.9</span>
+                      <span className="mx-1">•</span>
+                      <span>127 reviews</span>
+                    </div>
+                  </div>
+
+                  {/* Booking Form */}
+                  <div className="space-y-4 mb-6">
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="border border-gray-300 rounded-lg p-3 hover:border-green-500 transition-colors duration-200">
+                        <label className="block text-xs font-medium text-gray-600 mb-1">CHECK-IN</label>
+                        <input
+                          type="date"
+                          className="w-full text-sm font-medium text-gray-900 bg-transparent border-none outline-none"
+                        />
+                      </div>
+                      <div className="border border-gray-300 rounded-lg p-3 hover:border-green-500 transition-colors duration-200">
+                        <label className="block text-xs font-medium text-gray-600 mb-1">CHECK-OUT</label>
+                        <input
+                          type="date"
+                          className="w-full text-sm font-medium text-gray-900 bg-transparent border-none outline-none"
+                        />
+                      </div>
+                    </div>
+                    <div className="border border-gray-300 rounded-lg p-3 hover:border-green-500 transition-colors duration-200">
+                      <label className="block text-xs font-medium text-gray-600 mb-1">GUESTS</label>
+                      <select className="w-full text-sm font-medium text-gray-900 bg-transparent border-none outline-none">
+                        <option>1 guest</option>
+                        <option>2 guests</option>
+                        <option>3 guests</option>
+                        <option>4 guests</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <button className="w-full bg-green-600 hover:bg-green-700 text-white py-4 rounded-lg font-semibold text-lg transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 mb-4">
+                    Reserve Now
+                  </button>
+
+                  <p className="text-center text-sm text-gray-600 mb-6">You won't be charged yet</p>
+
+                  {/* Property Details */}
+                  <div className="space-y-4 pt-6 border-t border-gray-200">
+                    <h3 className="font-semibold text-gray-900 mb-4">Property Details</h3>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Category</span>
+                      <span className="font-medium text-gray-900">{stay.category?.name || "Luxury Property"}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Location</span>
+                      <span className="font-medium text-gray-900">
+                        {stay.location ? `${stay.location.city}, ${stay.location.country}` : "Premium Location"}
+                      </span>
+                    </div>
+
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Property ID</span>
+                      <span className="font-medium text-gray-900">#{stay.id}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center">
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm"
+              onClick={() => setShowDeleteModal(false)}
+            />
+            <div className="relative bg-white rounded-lg p-8 max-w-md mx-4 animate-in zoom-in duration-300">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Trash2 className="w-8 h-8 text-red-500" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-4">Delete Property</h3>
+                <p className="text-gray-600 mb-8">
+                  Are you sure you want to delete "{stay.title}"? This action cannot be undone.
+                </p>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-lg font-medium transition-all duration-300"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-medium transition-all duration-300 hover:shadow-lg"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>
-
-      {/* Stay Details */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-2">
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 className="text-2xl font-semibold mb-4">About this place</h2>
-            <p className="text-gray-700 whitespace-pre-line">{stay.description}</p>
-          </div>
-
-          {/* Amenities */}
-          {stay.amenities && stay.amenities.length > 0 && (
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-2xl font-semibold mb-4">Amenities</h2>
-              <div className="grid grid-cols-2 gap-4">
-                {stay.amenities.map((amenity) => (
-                  <div key={amenity.id} className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    <span>{amenity.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div>
-          <div className="bg-white p-6 rounded-lg shadow-md sticky top-6">
-            <h2 className="text-2xl font-semibold mb-4">Details</h2>
-            <div className="space-y-4">
-              <div>
-                <p className="text-gray-600">Price</p>
-                <p className="text-2xl font-bold text-green-600">${stay.price_per_night} <span className="text-sm font-normal">night</span></p>
-              </div>
-              
-              <div>
-                <p className="text-gray-600">Category</p>
-                <p className="font-medium">{stay.category?.name || 'Not categorized'}</p>
-              </div>
-              
-              <div>
-                <p className="text-gray-600">Location</p>
-                <p className="font-medium">
-                  {stay.location ? 
-                    `${stay.location.city}, ${stay.location.country}` : 
-                    'Location not specified'}
-                </p>
-              </div>
-              
-              <div>
-                <p className="text-gray-600">Capacity</p>
-                <p className="font-medium">{stay.max_guests} guests</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    </>
+  )
 }
