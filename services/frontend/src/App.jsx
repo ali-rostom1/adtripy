@@ -22,6 +22,15 @@ import StayDetailPage from "./pages/guest/stays/StayDetailPage";
 import CreateStayPage from "./pages/guest/stays/CreateStayPage";
 import EditStayPage from "./pages/guest/stays/EditStayPage";
 
+// Import the cars pages
+import CarsPage from "./pages/guest/cars/CarsPage";
+import CarDetailsPage from "./pages/guest/cars/CarDetailsPage";
+import CreateCarPage from "./pages/guest/cars/CreateCarPage";
+import EditCarPage from "./pages/guest/cars/EditCarPage";
+
+// Import the ErrorBoundary
+import ErrorBoundary from "./components/ErrorBoundary";
+
 function App() {
   // Get user and token to check for authentication
   const { user, token } = useAuthStore();
@@ -78,6 +87,19 @@ function App() {
           <Route path="/stays/create" element={<CreateStayPage />} />
           <Route path="/stays/edit/:id" element={<EditStayPage />} />
           <Route path="/stays/:id" element={<StayDetailPage />} />
+          
+          {/* Car routes - PUBLIC, no authentication required */}
+          <Route 
+            path="/cars" 
+            element={
+              <ErrorBoundary>
+                <CarsPage />
+              </ErrorBoundary>
+            } 
+          />
+          <Route path="/cars/create" element={<CreateCarPage />} /> {/* More specific route first */}
+          <Route path="/cars/:id/edit" element={<EditCarPage />} /> {/* More specific route first */}
+          <Route path="/cars/:id" element={<CarDetailsPage />} /> {/* Parameter route last */}
           
           {/* Redirect to guest page or login */}
           <Route

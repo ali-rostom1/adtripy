@@ -1,8 +1,74 @@
 import carsClient from './carsClient';
 
-// Get all vehicles with pagination
-export const getVehicles = (page = 1) => 
-  carsClient.get('/vehicles', { params: { page } });
+// Get all vehicles with pagination and filters
+export const getVehicles = (page = 1, filters = {}) => {
+  // Convert filter object to query parameters
+  const params = { page };
+  
+  // Add location filter
+  if (filters.location) {
+    params.location = filters.location;
+  }
+  
+  // Add date filters
+  if (filters.pickupDate) {
+    params.pickup_date = filters.pickupDate;
+  }
+  
+  if (filters.returnDate) {
+    params.return_date = filters.returnDate;
+  }
+  
+  // Add price range
+  if (filters.priceRange && filters.priceRange.length === 2) {
+    params.min_price = filters.priceRange[0];
+    params.max_price = filters.priceRange[1];
+  }
+  
+  // Add vehicle type filters
+  if (filters.vehicleType && filters.vehicleType.length > 0) {
+    params.vehicle_types = filters.vehicleType.join(',');
+  }
+  
+  // Add feature filters
+  if (filters.features && filters.features.length > 0) {
+    params.features = filters.features.join(',');
+  }
+  
+  // Add transmission type
+  if (filters.transmission) {
+    params.transmission = filters.transmission;
+  }
+  
+  // Add seats filter
+  if (filters.seats && filters.seats > 0) {
+    params.min_seats = filters.seats;
+  }
+  
+  // Add rating filter
+  if (filters.rating && filters.rating > 0) {
+    params.min_rating = filters.rating;
+  }
+  
+  // Add quick option filters
+  if (filters.instantBook) {
+    params.instant_book = true;
+  }
+  
+  if (filters.verified) {
+    params.verified = true;
+  }
+  
+  console.log('Fetching vehicles with params:', params);
+  console.log('API URL:', import.meta.env.VITE_CARS_API_URL);
+  
+  // Return the API call with better error handling
+  return carsClient.get('/vehicles', { params })
+    .catch(error => {
+      console.error('API error in getVehicles:', error.response || error);
+      throw error;
+    });
+};
 
 // Get a specific vehicle
 export const getVehicleById = (id) => 
