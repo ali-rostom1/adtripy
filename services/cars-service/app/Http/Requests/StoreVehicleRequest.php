@@ -6,23 +6,30 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreVehicleRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'host_id'            => 'required|integer',
+            'title'              => 'required|string|max:255',
+            'description'        => 'nullable|string',
+            'price_per_day'      => 'required|numeric|min:0',
+            'seats'              => 'required|integer|min:1',
+            'doors'              => 'required|integer|min:1',
+            'transmission'       => 'required|in:automatic,manual',
+            'fuel_type'          => 'required|in:petrol,diesel,electric,hybrid',
+            'vehicle_category_id'=> 'required|exists:vehicle_categories,id',
+            'location_id'        => 'required|exists:locations,id',
+            'features'           => 'nullable|array',
+            'features.*'         => 'integer|exists:vehicle_features,id',
+            'media'              => 'nullable|array',
+            'media.*.url'        => 'required_with:media|url',
+            'media.*.type'       => 'in:image,video',
+            'media.*.sort_order' => 'integer|min:0',
         ];
     }
 }

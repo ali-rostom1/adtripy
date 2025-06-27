@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo, BelongsToMany, HasMany
+    BelongsTo,
+    BelongsToMany,
+    HasMany
 };
 
 class Vehicle extends Model
@@ -34,8 +36,14 @@ class Vehicle extends Model
 
     public function features(): BelongsToMany
     {
-        return $this->belongsToMany(VehicleFeature::class);
+        return $this->belongsToMany(
+            VehicleFeature::class,
+            'vehicle_feature_vehicle', 
+            'vehicle_id',
+            'vehicle_feature_id'
+        );
     }
+
 
     public function media(): HasMany
     {

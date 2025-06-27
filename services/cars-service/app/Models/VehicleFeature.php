@@ -11,6 +11,12 @@ class VehicleFeature extends Model
 
     public function vehicles(): BelongsToMany
     {
-        return $this->belongsToMany(Vehicle::class);
+        return $this->belongsToMany(
+            Vehicle::class,
+            'vehicle_feature_vehicle',
+            'vehicle_feature_id',
+            'vehicle_id'
+        );
     }
+
 }
