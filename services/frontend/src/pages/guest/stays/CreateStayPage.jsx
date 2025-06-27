@@ -126,6 +126,7 @@ export default function CreateStayPage() {
   };
 
   return (
+    
     <div className="container mx-auto px-4 py-8">
       <div className="flex items-center mb-8">
         <Link to="/stays" className="text-green-600 hover:text-green-800 mr-4">
