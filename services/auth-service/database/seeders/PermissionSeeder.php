@@ -14,48 +14,45 @@ class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        $permissions = [
-            'verify email',
-            'verify phone',
-            'update password',
-            'edit profile',
-            'manage resources',
-            'create stay',
+        Role::create(['name' => 'guest']);
+        Role::create(['name' => 'host']);
+        Role::create(['name' => 'admin']);
+        $guestPermissions = [
+            'bookings.create',
+            'bookings.cancel_own',
+            'reviews.create',
+            'payments.make_payment'
         ];
-
-        foreach ($permissions as $permission) {
+        $hostPermissions = [
+            'properties.manage_own',
+            'bookings.manage_own',
+            'payouts.view_earnings',
+            'calendar.update_availability'
+        ];
+        $adminPermissions = [
+            'users.manage',
+            'properties.manage_all',
+            'bookings.manage_all',
+            'reports.view',
+            'settings.update'
+        ];
+        foreach ($guestPermissions as $permission) {
             Permission::firstOrCreate(['name' => $permission]);
         }
-        
-        $unverifiedHost = Role::firstOrCreate(['name' => 'unverified-host']);
-        $verifiedHost = Role::firstOrCreate(['name' => 'verified-host']);
-        $unverifiedGuest = Role::firstOrCreate(['name' => 'unverified-guest']);
-        $verifiedGuest = Role::firstOrCreate(['name' => 'verified-guest']);
+        foreach ($hostPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
+        foreach ($adminPermissions as $permission) {
+            Permission::firstOrCreate(['name' => $permission]);
+        }
 
-        $unverifiedHost->syncPermissions([
-            'verify email',
-            'verify phone',
-            'update password',
-            'edit profile'
-        ]);
+        // Assign permissions to roles
+        $guestRole = Role::findByName('guest');
+        $hostRole = Role::findByName('host');
+        $adminRole = Role::findByName('admin');
+        $guestRole->syncPermissions($guestPermissions);
+        $hostRole->syncPermissions($hostPermissions);
+        $adminRole->syncPermissions($adminPermissions);
         
-        $verifiedHost->syncPermissions([
-            'update password',
-            'edit profile',
-            'manage resources',
-            'create stay',
-        ]);
-
-        $unverifiedGuest->syncPermissions([
-            'verify email',
-            'verify phone',
-            'update password',
-            'edit profile'
-        ]);
-        
-        $verifiedGuest->syncPermissions([
-            'update password',
-            'edit profile'
-        ]);
     }
 }

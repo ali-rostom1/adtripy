@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Profile;
 use App\Http\Controllers\Controller;
 
 use App\Models\Host;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 
@@ -11,10 +12,17 @@ class HostProfileController extends Controller
 {
     public function me(){
         try{
-            $host = Host::with('user')->where('user_id', Auth::id())->first();
+            $user = User::where('id', Auth::id())
+                ->first();
+            if($user->hostProfile() == Null){
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Host profile not found'
+                ], 404);
+            }
             return response()->json([
                 'status' => 'success',
-                'data' => $host
+                'data' => $user->hostProfile()
             ]);
         }catch(\Exception $e){
             return response()->json([
@@ -24,39 +32,25 @@ class HostProfileController extends Controller
             ], 500);
         }
     }
-    public function show(String $id){
+    public function updateHostProfile(Request $request)
+    {
         try{
-            $host = Host::with(['user' => function($query) {
-                $query->select([
-                    'id',
-                    'firstName', 
-                    'lastName',
-                    'city',
-                    'country',
-                    'pfp_path',
-                    'created_at' // Join date/member since
-                ]);
-            }])->where('user_id', $id)->first();
-            
-            if(!$host){
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Host not found'
-                ], 404);
-            }
+            $validated = $request->validate([
+            'business_name' => 'sometimes|string|max:255',
+            ]);
 
-            if ($host && $host->user) {
-                $host->user->append('age');
-            }
+            $profile = $request->user()->hostProfile()->firstOrFail();
+            $profile->update($validated);
 
             return response()->json([
                 'status' => 'success',
-                'data' => $host
+                'message' => 'Host profile updated successfully',
+                'data' => $profile
             ]);
         }catch(\Exception $e){
             return response()->json([
                 'status' => 'error',
-                'message' => 'Could not retrieve host profile',
+                'message' => 'Could not update host profile',
                 'error' => $e->getMessage()
             ], 500);
         }

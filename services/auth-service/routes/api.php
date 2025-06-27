@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HostAuthController;
+use App\Http\Controllers\HostController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\Profile\GuestProfileController;
 use App\Http\Controllers\Profile\HostProfileController;
@@ -35,7 +36,7 @@ Route::prefix('v1')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
     Route::post('/refresh', [AuthController::class, 'refresh']);
 
-    Route::post('/host/register', [HostAuthController::class, 'register'])->middleware('auth:api');
+    Route::post('/become-host', [HostController::class, 'becomeHost'])->middleware('auth:api');
 
 
     Route::post('/send-code', [AuthController::class, 'sendVerificationCode'])->middleware('auth');
@@ -63,8 +64,13 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/guest-profile', [GuestProfileController::class, 'me']);
         Route::get('/me/host-profile', [HostProfileController::class, 'me']);
 
-
+        // Basic User profile edit
         Route::put('/profile/edit', [ProfileController::class, 'update']);
+
+        // Role specific profile routes
+        Route::patch("/profile/guest", [GuestProfileController::class, 'updateGuestProfile'])->middleware('role:guest');
+        Route::patch("/profile/host", [HostProfileController::class, 'updateHostProfile'])->middleware('role:host');
+
 
         // Profile picture routes
         Route::post('/profile/picture', [ProfileController::class, 'editPfp']);
