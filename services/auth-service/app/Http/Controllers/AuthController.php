@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\VerifyEmail;
 use App\Models\Guest;
+use App\Models\GuestProfile;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -205,12 +206,13 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
                 'phone' => $request->phone ?? null,
             ]);
-            $user->syncRoles(['unverified-guest']);
-            $guest = Guest::create([
-                'id' => (string) Str::uuid(),
-                'user_id' => $user->id,
+            $user->syncRoles(['guest']);
+            $guestProfile = GuestProfile::create(['id' => Str::orderedUuid()]);
+            $user->profiles()->create([
+                'id' => Str::orderedUuid(),
+                'profileable_id' => $guestProfile->id,
+                'profileable_type' => GuestProfile::class,
             ]);
-
             // Generate access token
             $token = JWTAuth::fromUser($user);
 

@@ -3,14 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -77,5 +80,24 @@ class User extends Authenticatable
     }
     public function name(){
         return trim($this->firstName . ' ' . $this->lastName);
+    }
+
+    public function profiles()
+    {
+        return $this->hasMany(Profile::class);
+    }
+    
+    public function guestProfile()
+    {
+        return $this->profiles()
+            ->where('profileable_type', GuestProfile::class)
+            ->first()?->profileable;
+    }
+
+    public function hostProfile()
+    {
+        return $this->profiles()
+            ->where('profileable_type', HostProfile::class)
+            ->first()?->profileable;
     }
 }

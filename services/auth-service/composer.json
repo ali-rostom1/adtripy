@@ -11,19 +11,11 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-<<<<<<< HEAD
-        "laravel/tinker": "^2.10.1"
-=======
-<<<<<<< HEAD
         "laravel/tinker": "^2.10.1",
         "league/flysystem-aws-s3-v3": "^3.29",
         "spatie/laravel-permission": "^6.19",
         "twilio/sdk": "^8.6",
         "tymon/jwt-auth": "^2.2"
-=======
-        "laravel/tinker": "^2.10.1"
->>>>>>> 52bc2537473c219474860525ca75fa3dc1c89343
->>>>>>> b427e14 (fix issues)
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -87,12 +79,4 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
-<<<<<<< HEAD
 }
-=======
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> 52bc2537473c219474860525ca75fa3dc1c89343
->>>>>>> b427e14 (fix issues)
