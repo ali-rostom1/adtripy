@@ -10,12 +10,14 @@ return new class extends Migration {
      */
     public function up()
     {
-        Schema::create('vehicle_media', function (Blueprint $table) {
+        Schema::create('locations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
-            $table->string('url');
-            $table->enum('type', ['image', 'video'])->default('image');
-            $table->unsignedInteger('sort_order')->default(0);
+            $table->string('address');
+            $table->string('city');
+            $table->string('state')->nullable();
+            $table->string('country');
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }
@@ -25,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('vehicle_media');
+        Schema::dropIfExists('locations');
     }
 };
