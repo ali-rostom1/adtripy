@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCarsStore } from "../../../store/CarsStore";
 import ClassicNavbar from "../../../components/guest/Nav";
+import CarsFilter from "../../../components/filter/CarsFilter"; // Add this import
 import {
   MapPin,
   Star,
@@ -18,8 +19,10 @@ export default function CarsPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [viewMode, setViewMode] = useState("list");
   const [favorites, setFavorites] = useState(new Set());
+  const [activeFilters, setActiveFilters] = useState({}); // Add this state
 
   useEffect(() => {
+    // Initial fetch without filters
     fetchVehicles();
   }, []);
 
@@ -39,11 +42,17 @@ export default function CarsPage() {
   }, []);
 
   const handlePageChange = (page) => {
-    fetchVehicles(page);
+    // Pass the active filters when changing pages
+    fetchVehicles(page, activeFilters);
   };
 
   const handleFilterApply = (filters) => {
+    // Save the active filters
+    setActiveFilters(filters);
+    
+    // Apply filters and reset to page 1
     fetchVehicles(1, filters);
+    
     // Close filters on mobile after applying
     if (window.innerWidth < 1024) {
       setShowFilters(false);
@@ -131,8 +140,8 @@ export default function CarsPage() {
                     </button>
                   </div>
                   <div className="p-4">
-                    {/* Replace with cars filter component when available */}
-                    <div className="text-gray-500">Vehicle filters coming soon</div>
+                    {/* Use CarsFilter component */}
+                    <CarsFilter onApplyFilters={handleFilterApply} />
                   </div>
                 </div>
               </div>
@@ -142,11 +151,8 @@ export default function CarsPage() {
             {showFilters && (
               <aside className="hidden lg:block w-80 flex-shrink-0">
                 <div className="sticky top-32">
-                  {/* Replace with cars filter component when available */}
-                  <div className="bg-white p-6 border border-gray-200 rounded-lg">
-                    <h3 className="text-lg font-serif text-gray-900 mb-4">Filter Vehicles</h3>
-                    <div className="text-gray-500">Vehicle filters coming soon</div>
-                  </div>
+                  {/* Use CarsFilter component */}
+                  <CarsFilter onApplyFilters={handleFilterApply} />
                 </div>
               </aside>
             )}
@@ -177,6 +183,43 @@ export default function CarsPage() {
                     vehicles
                   </div>
                 </div>
+
+                {/* Add active filter indicators here */}
+                {Object.keys(activeFilters).length > 0 && (
+                  <div className="flex flex-wrap gap-2 my-2">
+                    {activeFilters.vehicleType?.length > 0 && (
+                      <div className="bg-green-100 text-green-800 px-3 py-1 text-xs rounded-full flex items-center">
+                        Types: {activeFilters.vehicleType.length}
+                        <button 
+                          onClick={() => {
+                            const newFilters = {...activeFilters, vehicleType: []};
+                            setActiveFilters(newFilters);
+                            fetchVehicles(1, newFilters);
+                          }}
+                          className="ml-2"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                    {activeFilters.priceRange && activeFilters.priceRange[0] > 50 && (
+                      <div className="bg-green-100 text-green-800 px-3 py-1 text-xs rounded-full flex items-center">
+                        Price: ${activeFilters.priceRange[0]}+
+                        <button 
+                          onClick={() => {
+                            const newFilters = {...activeFilters, priceRange: [50, 500]};
+                            setActiveFilters(newFilters);
+                            fetchVehicles(1, newFilters);
+                          }}
+                          className="ml-2"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
+                    {/* Add more filter indicators as needed */}
+                  </div>
+                )}
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-6">
                   <div className="flex items-center border border-gray-300">
