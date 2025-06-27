@@ -297,7 +297,7 @@ const ClassicFilter = ({ onApplyFilters }) => {
 
         <button
           onClick={applyFilters}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 font-medium transition-colors duration-200"
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 font-medium transition-colors duration-200"
         >
           Apply Filters
         </button>

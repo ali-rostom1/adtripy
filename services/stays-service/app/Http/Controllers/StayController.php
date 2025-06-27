@@ -21,27 +21,47 @@ class StayController extends Controller
     // POST /api/stays
     public function store(StoreStayRequest $request): JsonResponse
     {
-        $data = $request->validated();
-
-        // create main record
-        $stay = Stay::create($data);
-
-        // attach amenities if present
-        if (!empty($data['amenities'])) {
-            $stay->amenities()->sync($data['amenities']);
+        // Get validated data
+        $validatedData = $request->validated();
+        
+        // Create the stay
+        $stay = Stay::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'price_per_night' => $validatedData['price_per_night'],
+            'max_guests' => $validatedData['max_guests'],
+            'bedrooms' => $validatedData['bedrooms'],
+            'bathrooms' => $validatedData['bathrooms'],
+            'category_id' => $validatedData['category_id'],
+            'host_id' => $validatedData['host_id'],
+            'location_id' => $validatedData['location_id']
+        ]);
+        
+        // Handle amenities
+        if (isset($validatedData['amenities'])) {
+            $stay->amenities()->sync($validatedData['amenities']);
         }
-
-        // add media if present
-        if (!empty($data['media'])) {
-            foreach ($data['media'] as $item) {
-                $stay->media()->create($item);
+        
+        // Handle media uploads
+        if ($request->hasFile('media')) {
+            foreach ($request->file('media') as $index => $mediaFile) {
+                // Generate a unique file name
+                $fileName = time() . '_' . $index . '.' . $mediaFile->getClientOriginalExtension();
+                
+                // Store the file in the public/storage/stays directory
+                $mediaPath = $mediaFile->storeAs('stays', $fileName, 'public');
+                
+                // Create a new media record
+                $stay->media()->create([
+                    'url' => '/storage/' . $mediaPath,
+                    'type' => 'image',
+                    'sort_order' => $index
+                ]);
             }
         }
-
-        // reload relations
-        $stay->load(['location', 'category', 'amenities', 'media']);
-
-        return response()->json($stay, 201);
+        
+        // Return the created stay with its relationships
+        return response()->json($stay->load(['location', 'amenities', 'media']), 201);
     }
 
     // GET /api/stays/{stay}
