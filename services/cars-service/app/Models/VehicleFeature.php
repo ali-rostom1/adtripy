@@ -16,6 +16,7 @@ class VehicleFeature extends Model
             'vehicle_feature_vehicle',
             'vehicle_feature_id',
             'vehicle_id'
+            
         );
     }
 
