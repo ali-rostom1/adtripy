@@ -31,10 +31,16 @@ Route::prefix('v1')->group(function () {
         }
     });
 
-    Route::post('/login', [AuthController::class, 'login']);
+    // Auth routes
     Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:api');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware('jwt.auth');
     Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::get('/user', [AuthController::class, 'userProfile'])->middleware('jwt.auth');
+    Route::get('/verify/{token}', [AuthController::class, 'verify']);
+    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
 
     Route::post('/become-host', [HostController::class, 'becomeHost'])->middleware('auth:api');
 

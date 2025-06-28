@@ -31,9 +31,19 @@ import {
   Wine,
   Anchor,
 } from "lucide-react"
+import { useAuthStore } from '../../../store/AuthStore';
 
 export default function CreateStayPage() {
-  const navigate = useNavigate()
+  const { user, token } = useAuthStore();
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    // Check if user is authenticated
+    if (!user || !token) {
+      navigate('/login?redirect=/stays/create');
+    }
+  }, [user, token, navigate]);
+
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
