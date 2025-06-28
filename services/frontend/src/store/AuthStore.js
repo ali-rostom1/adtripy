@@ -22,7 +22,7 @@ export const useAuthStore = create(
         set({ isLoading: true, error: null });
         try {
           const response = await loginApi({ email, password });
-          const { user, access_token, refresh_token } = response.data;
+          const { user, access_token, refresh_token } = response;
           set({
             user,
             token: access_token,

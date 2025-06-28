@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
-import { createVehicle } from "../../../api/Cars"
+import { createVehicle } from "../../../api/cars"
 import ClassicNavbar from "../../../components/guest/Nav"
 import {
   ChevronLeft,
