@@ -12,7 +12,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Register the JWT middleware
+        $middleware->alias([
+            'jwt.auth' => \App\Http\Middleware\JwtMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->withProviders([
+        // Other service providers...
+        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
+    ])
+    ->create();

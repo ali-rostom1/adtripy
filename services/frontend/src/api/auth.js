@@ -1,14 +1,40 @@
 import api from "./client";
+import authClient from './authClient';
 
 // Authentication endpoints
-export const login = (credentials) => 
-  api.post("/v1/login", credentials);
+export const login = async (credentials) => {
+  try {
+    const response = await authClient.post('/login', credentials);
+    return response.data;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
+  }
+};
 
-export const register = (userData) => 
-  api.post("/v1/register", userData);
+export const register = async (userData) => {
+  try {
+    const response = await authClient.post('/register', userData);
+    return response.data;
+  } catch (error) {
+    console.error('Registration error:', error);
+    throw error;
+  }
+};
 
-export const logout = () => 
-  api.post("/v1/logout");
+export const logout = async (token) => {
+  try {
+    const response = await authClient.post('/logout', {}, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Logout error:', error);
+    throw error;
+  }
+};
 
 export const refreshToken = (refreshToken) => 
   api.post("/v1/refresh", { refresh_token: refreshToken });
@@ -34,5 +60,19 @@ export const verifyPhone = (phone, code) =>
 
 export const updateUserInfo = (data) => 
   api.post("/v1/profile/update", data);
+
+export const getUserProfile = async (token) => {
+  try {
+    const response = await authClient.get('/user', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Get user profile error:', error);
+    throw error;
+  }
+};
 
 

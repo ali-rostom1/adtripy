@@ -29,48 +29,53 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    setError("")
-
-    // Validate password match
-    if (formData.password !== formData.password_confirmation) {
-      setError("Passwords don't match")
-      setLoading(false)
-      return
-    }
-
-    // Log important information
-    console.log("Auth API URL:", import.meta.env.VITE_AUTH_API_URL)
-    console.log(
-      "Full registration endpoint:",
-      `${import.meta.env.VITE_AUTH_API_URL}/api/v1/register`
-    )
-    console.log("Registration data:", formData)
+    setError(null)
 
     try {
-      // Make direct fetch request for debugging
-      const response = await fetch(
-        `${import.meta.env.VITE_AUTH_API_URL}/api/v1/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      )
-
-      const data = await response.json()
-      console.log("Registration response:", data)
-
-      if (!response.ok) {
-        throw new Error(data.message || "Registration failed")
+      // Check if passwords match
+      if (formData.password !== formData.password_confirmation) {
+        setError("Passwords do not match")
+        setLoading(false)
+        return
       }
 
-      // If successful, navigate to guest page
-      navigate("/guest")
+      console.log("Submitting registration data to:", import.meta.env.VITE_AUTH_API_URL)
+
+      const response = await register(formData)
+      console.log("Registration response:", response)
+
+      if (response.status === "success") {
+        // Store token from successful registration
+        loginUser(response.authorization.token, response.user)
+
+        // Navigate to success page or dashboard
+        navigate("/email-verification-sent")
+      } else {
+        setError(response.message || "Registration failed with an unknown error.")
+      }
     } catch (err) {
       console.error("Registration error:", err)
-      setError(err.message || "Registration failed. Please try again later.")
+
+      // More detailed error handling
+      if (err.response) {
+        if (err.response.status === 422 && err.response.data.errors) {
+          // Format validation errors
+          const errorMessages = Object.values(err.response.data.errors)
+            .flat()
+            .join("\n")
+          setError(errorMessages)
+        } else if (err.response.data && err.response.data.message) {
+          setError(err.response.data.message)
+        } else {
+          setError(
+            `Error (${err.response.status}): The server returned an unexpected response.`
+          )
+        }
+      } else if (err.message) {
+        setError(`Network error: ${err.message}`)
+      } else {
+        setError("An unknown error occurred during registration.")
+      }
     } finally {
       setLoading(false)
     }
