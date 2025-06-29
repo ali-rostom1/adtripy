@@ -1,7 +1,6 @@
 <?php
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -123,4 +122,9 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'routeMiddleware' => [
+        // ... other middleware entries
+        'jwt.auth' => \Tymon\JWTAuth\Http\Middleware\Authenticate::class,
+        'sync.jwt.user' => \App\Http\Middleware\SyncJwtUser::class,
+    ],
 ];

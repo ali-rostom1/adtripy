@@ -1,8 +1,9 @@
+import axios from "axios";
 import { create } from "zustand";
+import { useAuthStore } from "./AuthStore";
 import {
   getStays,
   getStayById,
-  createStay as createStayApi,
   updateStay as updateStayApi,
   deleteStay as deleteStayApi,
 } from "../api/stays";
@@ -60,9 +61,25 @@ export const useStaysStore = create((set, get) => ({
 
   // Create a new stay
   createStay: async (stayData) => {
-    set({ isLoading: true, error: null });
     try {
-      const response = await createStayApi(stayData);
+      // Get the token from auth store
+      const token = useAuthStore.getState().token;
+
+      if (!token) {
+        throw new Error("Authentication required");
+      }
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_STAYS_API_URL}/api/stays`,
+        stayData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       set((state) => ({
         stays: [response.data, ...state.stays],
         isLoading: false,
@@ -83,7 +100,7 @@ export const useStaysStore = create((set, get) => ({
     try {
       const response = await updateStayApi(id, stayData);
       set((state) => ({
-        stays: state.stays.map((stay) => 
+        stays: state.stays.map((stay) =>
           stay.id === id ? response.data : stay
         ),
         currentStay: state.currentStay?.id === id ? response.data : state.currentStay,

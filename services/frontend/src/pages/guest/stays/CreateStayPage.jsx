@@ -1,5 +1,3 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { useNavigate, Link } from "react-router-dom"
 import { createStay } from "../../../api/stays"
@@ -68,7 +66,7 @@ export default function CreateStayPage() {
     bedrooms: "",
     bathrooms: "",
     category_id: "1",
-    host_id: "1",
+    // Don't set default host_id - we'll use the current user's ID
     location_id: "1",
     address: "",
     city: "",
@@ -177,59 +175,78 @@ export default function CreateStayPage() {
 
     try {
       // Create a FormData object to handle file uploads
-      const formDataToSubmit = new FormData()
+      const formDataToSubmit = new FormData();
 
       // Add regular form fields
-      formDataToSubmit.append("title", formData.title)
-      formDataToSubmit.append("description", formData.description)
-      formDataToSubmit.append("price_per_night", formData.price_per_night || 0)
-      formDataToSubmit.append("max_guests", formData.max_guests || 1)
-      formDataToSubmit.append("bedrooms", formData.bedrooms || 1)
-      formDataToSubmit.append("bathrooms", formData.bathrooms || 1)
-      formDataToSubmit.append("category_id", 1)
+      formDataToSubmit.append("title", formData.title);
+      formDataToSubmit.append("description", formData.description);
+      formDataToSubmit.append("price_per_night", formData.price_per_night || 0);
+      formDataToSubmit.append("max_guests", formData.max_guests || 1);
+      formDataToSubmit.append("bedrooms", formData.bedrooms || 1);
+      formDataToSubmit.append("bathrooms", formData.bathrooms || 1);
+      formDataToSubmit.append("category_id", 1);
       
-      // Use host_id=2 since 1 isn't working
-      formDataToSubmit.append("host_id",  "2") // Use a fixed host_id of 2
-      formDataToSubmit.append("location_id", "1")
+      // Make sure to check if we have a user
+      if (!user) {
+        throw new Error('User must be logged in to create a stay');
+      }
+      
+      console.log('Current user:', user);
+      formDataToSubmit.append("host_id", user.id.toString());
+      console.log('Added host_id:', user.id.toString());
+      
+      formDataToSubmit.append("location_id", "1");
 
       // Location fields - these are still needed for creating the location
-      formDataToSubmit.append("address", formData.address || "")
-      formDataToSubmit.append("city", formData.city || "")
-      formDataToSubmit.append("state", formData.state || "")
-      formDataToSubmit.append("country", formData.country || "")
-      formDataToSubmit.append("postal_code", formData.postal_code || "")
-      formDataToSubmit.append("latitude", formData.latitude || "")
-      formDataToSubmit.append("longitude", formData.longitude || "")
+      formDataToSubmit.append("address", formData.address || "");
+      formDataToSubmit.append("city", formData.city || "");
+      formDataToSubmit.append("state", formData.state || "");
+      formDataToSubmit.append("country", formData.country || "");
+      formDataToSubmit.append("postal_code", formData.postal_code || "");
+      formDataToSubmit.append("latitude", formData.latitude || "");
+      formDataToSubmit.append("longitude", formData.longitude || "");
 
       // Add a single valid amenity
-      formDataToSubmit.append("amenities[0]", "1") // Add this line
+      formDataToSubmit.append("amenities[0]", "1");
 
       // Add media files
       if (formData.mediaFiles && formData.mediaFiles.length > 0) {
         Array.from(formData.mediaFiles).forEach((file, index) => {
-          formDataToSubmit.append(`media[${index}]`, file)
-        })
+          formDataToSubmit.append(`media[${index}]`, file);
+        });
       }
 
-      console.log("Submitting stay data with fixed IDs")
+      console.log("Submitting stay data with user ID:", user.id);
+      
+      // Log all form data entries for debugging
+      console.log('FormData entries:');
+      for (let pair of formDataToSubmit.entries()) {
+        console.log(pair[0], pair[1]);
+      }
 
       // Use the updated API call that handles default host_id and amenities
-      const response = await createStay(formDataToSubmit)
-      console.log("Stay created:", response.data)
-      navigate(`/stays/${response.data.id}`)
+      const response = await createStay(formDataToSubmit);
+      console.log("Stay created:", response.data);
+      navigate(`/stays/${response.data.id}`);
     } catch (err) {
-      console.error("Error creating stay:", err)
+      console.error("Error creating stay:", err);
+      
+      // More detailed error logging
+      if (err.response) {
+        console.error('Response status:', err.response.status);
+        console.error('Response data:', err.response.data);
+      }
 
       if (err.response?.data?.errors) {
         const errorMessages = Object.entries(err.response.data.errors)
           .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
-          .join("\n")
-        setError(errorMessages)
+          .join("\n");
+        setError(errorMessages);
       } else {
-        setError(err.response?.data?.message || err.message || "Failed to create stay.")
+        setError(err.response?.data?.message || err.message || "Failed to create stay.");
       }
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -809,6 +826,13 @@ export default function CreateStayPage() {
       </div>
     </>
   )
+}
+
+// Add this to your createStay function
+const token = useAuthStore.getState().token;
+if (token) {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  console.log('Token payload:', payload);
 }
 
 
