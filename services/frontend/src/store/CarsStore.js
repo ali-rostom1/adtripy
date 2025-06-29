@@ -5,7 +5,7 @@ import {
   createVehicle as createVehicleApi,
   updateVehicle as updateVehicleApi,
   deleteVehicle as deleteVehicleApi,
-} from "../api/cars";
+} from "../api/Cars";
 
 export const useCarsStore = create((set, get) => {
   console.log("Creating cars store");

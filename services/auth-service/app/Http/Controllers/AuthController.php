@@ -219,7 +219,7 @@ class AuthController extends Controller
             // Send verification email
             try {
                 $verificationToken = Str::random(60);
-                Cache::put('email_verify_' . $verificationToken, $user->getKey(), now()->addHours(24));
+                Cache::put('email_verify_' . $verificationToken, $user->getKey(), now()->addHours(value: 24));
                 $verificationUrl = URL::to('/api/v1/verify-email/' . $verificationToken);
                 Mail::to($user->email)->send(new VerifyEmail($user, $verificationUrl));
             } catch (Exception $e) {
@@ -271,7 +271,14 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'firstName' => $user->firstName,
+                    'lastName' => $user->lastName,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'roles' => $user->getRoleNames(),
+                ],
                 'access_token' => $token,
                 'refresh_token' => $refreshToken,
                 'token_type' => 'bearer',

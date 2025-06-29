@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { getVehicleById, updateVehicle } from "../../../api/cars";
+import { getVehicleById, updateVehicle } from "../../../api/Cars";
 import ClassicNavbar from "../../../components/guest/Nav";
 
 export default function EditCarPage() {

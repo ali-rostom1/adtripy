@@ -8,6 +8,7 @@ use App\Http\Requests\StoreStayRequest;
 use App\Http\Requests\UpdateStayRequest;
 use App\Http\Resources\StayResource;
 use App\Http\Resources\StayCollection;
+use Illuminate\Support\Facades\Auth;
 
 class StayController extends Controller
 {
@@ -30,27 +31,45 @@ class StayController extends Controller
      */
     public function store(StoreStayRequest $request)
     {
-        // This is a protected endpoint - auth is required
-        $user = $request->auth; // User from JWT middleware
-        
-        // Create a new stay owned by the authenticated user
-        $stay = new Stay($request->validated());
-        $stay->host_id = $user->id;
-        $stay->save();
-        
-        // Handle relationships (amenities, media, etc.)
-        if ($request->has('amenities')) {
-            $stay->amenities()->sync($request->amenities);
+        try {
+            // Get the authenticated user
+            $user = auth()->user();
+            
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User authentication failed'
+                ], 401);
+            }
+            
+            // Log for debugging
+            \Log::info('Creating stay with user:', ['user_id' => $user->id]);
+            
+            // Create a new stay owned by the authenticated user
+            $stay = new Stay($request->validated());
+            $stay->host_id = $user->id;
+            $stay->save(); 
+            
+            // Handle relationships (amenities, media, etc.)
+            if ($request->has('amenities')) {
+                $stay->amenities()->sync($request->amenities);
+            }
+            
+            // Handle media uploads if any
+            if ($request->hasFile('media')) {
+                // Your media upload logic here
+            }
+            
+            return new StayResource($stay->load(['location', 'category', 'amenities', 'media']));
+        } catch (\Exception $e) {
+            \Log::error('Error creating stay: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create stay: ' . $e->getMessage()
+            ], 500);
         }
-        
-        // Handle media uploads if any
-        if ($request->hasFile('media')) {
-            // Your media upload logic here
-        }
-        
-        return new StayResource($stay->load(['location', 'category', 'amenities', 'media']));
     }
-
+    
     /**
      * Display the specified resource.
      */
@@ -67,7 +86,7 @@ class StayController extends Controller
     public function update(UpdateStayRequest $request, string $id)
     {
         // This is a protected endpoint - auth is required
-        $user = $request->auth; // User from JWT middleware
+        $user = Auth::user(); // Changed from $request->auth
         $stay = Stay::findOrFail($id);
         
         // Check if the authenticated user owns this stay
@@ -100,7 +119,7 @@ class StayController extends Controller
     public function destroy(Request $request, string $id)
     {
         // This is a protected endpoint - auth is required
-        $user = $request->auth; // User from JWT middleware
+        $user = Auth::user(); // Changed from $request->auth
         $stay = Stay::findOrFail($id);
         
         // Check if the authenticated user owns this stay
@@ -126,7 +145,7 @@ class StayController extends Controller
     public function myStays(Request $request)
     {
         // This is a protected endpoint - auth is required
-        $user = $request->auth; // User from JWT middleware
+        $user = Auth::user(); // Changed from $request->auth
         
         $stays = Stay::where('host_id', $user->id)
                     ->with(['location', 'category', 'amenities', 'media'])

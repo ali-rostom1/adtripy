@@ -1,4 +1,5 @@
 import staysClient from './staysClient';
+import { useAuthStore } from '../store/AuthStore';
 
 // Get all stays
 export const getStays = (page = 1) => 
@@ -10,17 +11,25 @@ export const getStayById = (id) =>
 
 // Create a new stay with proper content type for file uploads if needed
 export const createStay = (stayData) => {
+  // Get the current user from auth store
+  const user = useAuthStore.getState().user;
+  
+  if (!user) {
+    throw new Error('User must be logged in to create a stay');
+  }
+  
   // Check if stayData is already a FormData object
   const isFormData = stayData instanceof FormData;
   
   if (isFormData) {
-    // ALWAYS add host_id=2 (try a different ID since 1 isn't working)
+    // Remove any existing host_id
     for (let pair of stayData.entries()) {
       if (pair[0] === 'host_id') {
         stayData.delete('host_id');
       }
     }
-    stayData.append('host_id', '2'); // Try using ID 2 instead of 1
+    // Use the current user's ID
+    stayData.append('host_id', user.id.toString());
     
     // Make sure location_id is set
     for (let pair of stayData.entries()) {
@@ -51,14 +60,14 @@ export const createStay = (stayData) => {
     // For JSON data, ensure host_id is included
     const modifiedData = { ...stayData };
     
-    // ALWAYS set host_id to 2
-    modifiedData.host_id = 2;  // Try using ID 2 instead of 1
+    // Use the current user's ID
+    modifiedData.host_id = user.id;
     
     // Set default location_id and amenities
     modifiedData.location_id = 1;
     modifiedData.amenities = [1];
     
-    console.log('Sending stay data with host_id=2:', modifiedData);
+    console.log('Sending stay data with host_id:', modifiedData.host_id);
     
     return staysClient.post('/stays', modifiedData, {
       headers: { 'Content-Type': 'application/json' }
@@ -68,16 +77,23 @@ export const createStay = (stayData) => {
 
 // Update a stay similarly
 export const updateStay = (id, stayData) => {
+  // Get the current user from auth store
+  const user = useAuthStore.getState().user;
+  
+  if (!user) {
+    throw new Error('User must be logged in to update a stay');
+  }
+  
   const isFormData = stayData instanceof FormData;
   
   if (isFormData) {
-    // Set host_id=2
+    // Set host_id to current user's ID
     for (let pair of stayData.entries()) {
       if (pair[0] === 'host_id') {
         stayData.delete('host_id');
       }
     }
-    stayData.append('host_id', '2'); // Use ID 2
+    stayData.append('host_id', user.id.toString());
     
     // Clean up amenities
     for (let pair of stayData.entries()) {
@@ -95,8 +111,8 @@ export const updateStay = (id, stayData) => {
     // For JSON data
     const modifiedData = { ...stayData };
     
-    // ALWAYS set host_id to 2
-    modifiedData.host_id = 2;  // Use ID 2
+    // Use current user's ID
+    modifiedData.host_id = user.id;
     modifiedData.amenities = [1];
     
     return staysClient.put(`/stays/${id}`, modifiedData);
