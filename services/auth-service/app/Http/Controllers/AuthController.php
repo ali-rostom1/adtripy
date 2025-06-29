@@ -271,7 +271,14 @@ class AuthController extends Controller
 
             return response()->json([
                 'status' => 'success',
-                'user' => $user,
+                'user' => [
+                    'id' => $user->id,
+                    'firstName' => $user->firstName,
+                    'lastName' => $user->lastName,
+                    'email' => $user->email,
+                    'phone' => $user->phone,
+                    'roles' => $user->getRoleNames(),
+                ],
                 'access_token' => $token,
                 'refresh_token' => $refreshToken,
                 'token_type' => 'bearer',

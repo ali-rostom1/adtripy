@@ -163,6 +163,16 @@ export const useAuthStore = create(
           throw error;
         }
       },
+
+      // Check if the user has a specific role
+      hasRole: (role) => {
+        const user = get().user;
+        if (!user || !user.roles) return false;
+        return user.roles.some((r) => r === role || r.name === role);
+      },
+
+      // Check if the user is a host
+      isHost: () => get().hasRole("host"),
     }),
     {
       name: "auth-storage", // Name of the localStorage key

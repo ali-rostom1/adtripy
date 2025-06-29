@@ -31,6 +31,9 @@ import EditCarPage from "./pages/guest/cars/EditCarPage";
 // Import the ErrorBoundary
 import ErrorBoundary from "./components/ErrorBoundary";
 
+// Add this import
+import BecomeHostPage from "./pages/guest/host/BecomeHostPage";
+
 function App() {
   // Get user and token to check for authentication
   const { user, token } = useAuthStore();
@@ -109,6 +112,7 @@ function App() {
           
           {/* Catch all */}
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/become-host" element={<BecomeHostPage />} />
         </Routes>
       </AuthProvider>
     </Router>

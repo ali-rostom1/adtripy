@@ -283,9 +283,19 @@ const BookingNavbar = () => {
                     <DropdownItem to="/favorites" icon={Heart}>
                       Favorites
                     </DropdownItem>
-                    <DropdownItem to="/profile/update" icon={Settings}>
-                      Settings
-                    </DropdownItem>
+                    
+                    {/* Add this new section */}
+                    <DropdownSeparator />
+                    {!user.roles?.includes('host') ? (
+                      <DropdownItem to="/become-host" icon={Home}>
+                        Become a Host
+                      </DropdownItem>
+                    ) : (
+                      <DropdownItem to="/host/dashboard" icon={Home}>
+                        Host Dashboard
+                      </DropdownItem>
+                    )}
+                    
                     <DropdownSeparator />
                     <div 
                       onClick={handleLogout}

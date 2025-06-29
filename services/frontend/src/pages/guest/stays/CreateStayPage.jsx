@@ -34,16 +34,23 @@ import {
 import { useAuthStore } from '../../../store/AuthStore';
 
 export default function CreateStayPage() {
-  const { user, token } = useAuthStore();
+  const { user, token, hasRole } = useAuthStore(); // Get hasRole function
   const navigate = useNavigate();
   
   useEffect(() => {
     // Check if user is authenticated
     if (!user || !token) {
       navigate('/login?redirect=/stays/create');
+      return;
     }
-  }, [user, token, navigate]);
-
+    
+    // Check if user is a host, if not redirect to become-host page
+    if (!hasRole('host')) {
+      navigate('/become-host');
+      return;
+    }
+  }, [user, token, hasRole, navigate]);
+  
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
