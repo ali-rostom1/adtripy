@@ -3,7 +3,7 @@ import { useAuthStore } from '../store/AuthStore';
 
 // Create an axios instance with baseURL
 const staysClient = axios.create({
-  baseURL: import.meta.env.VITE_STAYS_API_URL + '/api',
+  baseURL: import.meta.env.VITE_AUTH_API_URL + '/api/v1',
 });
 
 // Add a request interceptor to automatically add the auth token to every request
@@ -24,7 +24,13 @@ staysClient.interceptors.response.use(
   (error) => {
     // Handle authentication errors
     if (error.response?.status === 401) {
-      console.error('Authentication error:', error.response?.data?.message || 'Unauthorized');
+      console.error('Authentication error:', error.response?.data);
+      
+      // If token issues, could redirect to login
+      if (error.response?.data?.error_type === 'token_expired') {
+        // Optionally redirect to login
+        // window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

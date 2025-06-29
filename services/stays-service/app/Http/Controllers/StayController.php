@@ -32,37 +32,77 @@ class StayController extends Controller
     public function store(StoreStayRequest $request)
     {
         try {
-            // Get the authenticated user
-            $user = auth()->user();
+            // Get the user ID from the request (set by middleware)
+            $userId = $request->user_id;
             
-            if (!$user) {
+            if (!$userId) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'User authentication failed'
                 ], 401);
             }
             
-            // Log for debugging
-            \Log::info('Creating stay with user:', ['user_id' => $user->id]);
+            // Log all incoming data for debugging
+            \Log::info('Creating stay with request data:', [
+                'user_id' => $userId,
+                'validated_data' => $request->validated(),
+                'has_files' => $request->hasFile('media'),
+            ]);
             
             // Create a new stay owned by the authenticated user
-            $stay = new Stay($request->validated());
-            $stay->host_id = $user->id;
-            $stay->save(); 
+            try {
+                $stay = new Stay($request->validated());
+                $stay->host_id = $userId;
+                $stay->save();
+            } catch (\Exception $e) {
+                \Log::error('Error saving stay: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                throw $e;
+            }
             
             // Handle relationships (amenities, media, etc.)
-            if ($request->has('amenities')) {
-                $stay->amenities()->sync($request->amenities);
+            try {
+                if ($request->has('amenities')) {
+                    $stay->amenities()->sync($request->amenities);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error saving amenities: ' . $e->getMessage());
+                // Continue execution - don't fail the whole request for amenities
             }
             
             // Handle media uploads if any
             if ($request->hasFile('media')) {
-                // Your media upload logic here
+                try {
+                    // Simple file saving for now
+                    foreach ($request->file('media') as $index => $file) {
+                        $path = $file->store('stays/' . $stay->id, 'public');
+                        
+                        // Create media record
+                        $stay->media()->create([
+                            'path' => $path,
+                            'type' => 'image',
+                            'order' => $index
+                        ]);
+                    }
+                } catch (\Exception $e) {
+                    \Log::error('Error processing media uploads: ' . $e->getMessage());
+                    // Don't fail the request if media upload fails
+                }
             }
             
             return new StayResource($stay->load(['location', 'category', 'amenities', 'media']));
         } catch (\Exception $e) {
-            \Log::error('Error creating stay: ' . $e->getMessage());
+            \Log::error('Error creating stay: ' . $e->getMessage(), [
+                'exception' => get_class($e),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'status' => 'error',
                 'message' => 'Failed to create stay: ' . $e->getMessage()

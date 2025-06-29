@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\stayGateway\StaysGatewayController;
 
 
 Route::prefix('v1')->group(function () {
@@ -89,6 +90,28 @@ Route::prefix('v1')->group(function () {
 
 
 
+});
+
+// Auth endpoints
+Route::post('/v1/login', [AuthController::class, 'login']);
+Route::post('/v1/register', [AuthController::class, 'register']);
+
+// Protected routes that require authentication
+Route::middleware('auth:api')->group(function() {
+    // User profile endpoints
+    Route::get('/v1/me', [UserController::class, 'profile']);
+    Route::put('/v1/me', [UserController::class, 'updateProfile']);
+    
+    // GATEWAY TO STAYS-SERVICE
+    Route::prefix('v1/stays')->group(function() {
+        // Forward all stay-related requests to the stays-service
+        Route::get('/', [StaysGatewayController::class, 'index']);
+        Route::post('/', [StaysGatewayController::class, 'store']);
+        Route::get('/{id}', [StaysGatewayController::class, 'show']);
+        Route::put('/{id}', [StaysGatewayController::class, 'update']);
+        Route::delete('/{id}', [StaysGatewayController::class, 'destroy']);
+        Route::get('/my', [StaysGatewayController::class, 'myStays']);
+    });
 });
 
 
