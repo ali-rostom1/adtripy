@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import {
   ChevronDown,
   Search,
@@ -18,8 +19,8 @@ import {
 import { useAuthStore } from "../../store/AuthStore";
 
 const BookingNavbar = () => {
-  const logout = useAuthStore((state) => state.logout);
-
+  const { user, logout } = useAuthStore(); // Extract user directly
+  
   const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
@@ -28,20 +29,16 @@ const BookingNavbar = () => {
 
   const dropdownRef = useRef(null);
 
+  // Scroll effect logic remains the same
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
-      // Add glass effect when scrolled
       setIsScrolled(currentScrollY > 50);
-
-      // Hide/show navbar on scroll
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
       }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -49,31 +46,19 @@ const BookingNavbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  // Update the handleLogout function
   const handleLogout = async () => {
     try {
-      // Call the logout action from AuthStore
       await logout();
-
-      // Force clear localStorage
       localStorage.removeItem("auth-storage");
-
-      // Clear any session/cookie data if applicable
       document.cookie.split(";").forEach((c) => {
         document.cookie = c
           .replace(/^ +/, "")
           .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
       });
-
-      // Redirect to login page with a hard refresh
       window.location.href = "/login";
     } catch (error) {
       console.error("Logout failed:", error);
-
-      // Even if API logout fails, force clear auth data
       localStorage.removeItem("auth-storage");
-
-      // Force refresh the page
       window.location.reload();
     }
   };
@@ -91,8 +76,14 @@ const BookingNavbar = () => {
   }, []);
 
   const toggleDropdown = (dropdownName) => {
-    setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+    // Add a small delay to prevent immediate closing
+    setTimeout(() => {
+      setOpenDropdown(openDropdown === dropdownName ? null : dropdownName);
+    }, 10);
   };
+
+  // Create user display name
+  const userDisplayName = user ? `${user.firstName} ${user.lastName}` : "Account";
 
   const DropdownMenu = ({ trigger, children, isOpen, onToggle }) => (
     <div className="relative" ref={dropdownRef}>
@@ -114,15 +105,19 @@ const BookingNavbar = () => {
     </div>
   );
 
-  const DropdownItem = ({ href, children, icon: Icon }) => (
-    <a
-      href={href}
+  const DropdownItem = ({ to, children, icon: Icon, onClick }) => (
+    <Link
+      to={to}
       className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-200"
-      onClick={() => setOpenDropdown(null)}
+      onClick={(e) => {
+        // Don't close the dropdown when clicking links
+        e.stopPropagation();
+        if (onClick) onClick();
+      }}
     >
       {Icon && <Icon className="w-4 h-4 mr-3" />}
       {children}
-    </a>
+    </Link>
   );
 
   const DropdownLabel = ({ children }) => (
@@ -147,21 +142,21 @@ const BookingNavbar = () => {
         <div className="max-w-7xl mx-auto px-4 pt-2 pb-2 sm:px-6 lg:px-1">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <a href="" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
               <img
                 src={
                   isScrolled
                     ? "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/logoAdtripy.png"
                     : "https://fileupload-adtripy.s3.eu-west-3.amazonaws.com/whiteLogo.png"
                 }
-                alt="LuxeStay Logo"
+                alt="AdTripy Logo"
                 className="w-[140px] transition-all duration-300"
               />
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-1">
-              {/* Accommodation Dropdown */}
+              {/* Accommodation Dropdown - Updated with direct links to stays */}
               <DropdownMenu
                 trigger={
                   <>
@@ -173,18 +168,14 @@ const BookingNavbar = () => {
                 isOpen={openDropdown === "accommodation"}
                 onToggle={() => toggleDropdown("accommodation")}
               >
-                <DropdownLabel>Stay Types</DropdownLabel>
-                <DropdownItem href="/hotels">Hotels & Resorts</DropdownItem>
-                <DropdownItem href="/apartments">
-                  Apartments & Condos
-                </DropdownItem>
-                <DropdownItem href="/villas">Villas & Houses</DropdownItem>
-                <DropdownItem href="/unique">Unique Stays</DropdownItem>
+                <DropdownLabel>Stay Options</DropdownLabel>
+                <DropdownItem to="/stays">Browse All Stays</DropdownItem>
+                <DropdownItem to="/stays/create">List Your Property</DropdownItem>
                 <DropdownSeparator />
-                <DropdownItem href="/luxury">Luxury Collection</DropdownItem>
+                <DropdownItem to="/stays?type=luxury">Luxury Collection</DropdownItem>
               </DropdownMenu>
 
-              {/* Car Rental Dropdown */}
+              {/* Car Rental Dropdown - Updated with direct links to cars */}
               <DropdownMenu
                 trigger={
                   <>
@@ -196,17 +187,11 @@ const BookingNavbar = () => {
                 isOpen={openDropdown === "cars"}
                 onToggle={() => toggleDropdown("cars")}
               >
-                <DropdownLabel>Vehicle Types</DropdownLabel>
-                <DropdownItem href="/cars/economy">Economy Cars</DropdownItem>
-                <DropdownItem href="/cars/luxury">Luxury Vehicles</DropdownItem>
-                <DropdownItem href="/cars/suv">SUVs & Trucks</DropdownItem>
-                <DropdownItem href="/cars/electric">
-                  Electric Vehicles
-                </DropdownItem>
+                <DropdownLabel>Car Options</DropdownLabel>
+                <DropdownItem to="/cars">Browse All Cars</DropdownItem>
+                <DropdownItem to="/cars/create">List Your Vehicle</DropdownItem>
                 <DropdownSeparator />
-                <DropdownItem href="/cars/long-term">
-                  Long-term Rentals
-                </DropdownItem>
+                <DropdownItem to="/cars?type=luxury">Premium Vehicles</DropdownItem>
               </DropdownMenu>
 
               {/* Experiences Dropdown */}
@@ -222,22 +207,8 @@ const BookingNavbar = () => {
                 onToggle={() => toggleDropdown("experiences")}
               >
                 <DropdownLabel>Activity Types</DropdownLabel>
-                <DropdownItem href="/experiences/tours">
-                  Guided Tours
-                </DropdownItem>
-                <DropdownItem href="/experiences/adventure">
-                  Adventure Sports
-                </DropdownItem>
-                <DropdownItem href="/experiences/cultural">
-                  Cultural Experiences
-                </DropdownItem>
-                <DropdownItem href="/experiences/food">
-                  Food & Wine
-                </DropdownItem>
-                <DropdownSeparator />
-                <DropdownItem href="/experiences/premium">
-                  Premium Experiences
-                </DropdownItem>
+                <DropdownItem to="/experiences">Browse All Experiences</DropdownItem>
+                <DropdownItem to="/experiences/create">Host an Experience</DropdownItem>
               </DropdownMenu>
 
               {/* Destinations Dropdown */}
@@ -253,16 +224,9 @@ const BookingNavbar = () => {
                 onToggle={() => toggleDropdown("destinations")}
               >
                 <DropdownLabel>Popular Destinations</DropdownLabel>
-                <DropdownItem href="/destinations/europe">Europe</DropdownItem>
-                <DropdownItem href="/destinations/asia">Asia</DropdownItem>
-                <DropdownItem href="/destinations/americas">
-                  Americas
-                </DropdownItem>
-                <DropdownItem href="/destinations/africa">Africa</DropdownItem>
-                <DropdownSeparator />
-                <DropdownItem href="/destinations/trending">
-                  Trending Now
-                </DropdownItem>
+                <DropdownItem to="/destinations/europe">Europe</DropdownItem>
+                <DropdownItem to="/destinations/asia">Asia</DropdownItem>
+                <DropdownItem to="/destinations/americas">Americas</DropdownItem>
               </DropdownMenu>
             </div>
 
@@ -278,6 +242,7 @@ const BookingNavbar = () => {
               >
                 <Search className="w-4 h-4" />
               </button>
+              
               {/* Language/Currency */}
               <DropdownMenu
                 trigger={<Globe className="w-4 h-4" />}
@@ -285,42 +250,55 @@ const BookingNavbar = () => {
                 onToggle={() => toggleDropdown("language")}
               >
                 <DropdownLabel>Language & Currency</DropdownLabel>
-                <DropdownItem href="#">English (USD)</DropdownItem>
-                <DropdownItem href="#">Français (EUR)</DropdownItem>
-                <DropdownItem href="#">Español (EUR)</DropdownItem>
-                <DropdownItem href="#">Deutsch (EUR)</DropdownItem>
+                <DropdownItem to="#">English (USD)</DropdownItem>
+                <DropdownItem to="#">Français (EUR)</DropdownItem>
               </DropdownMenu>
 
+              {/* User Account - Updated to show user name if logged in */}
               <DropdownMenu
                 trigger={
                   <>
                     <User className="w-4 h-4 mr-2" />
-                    Account
+                    {userDisplayName}
                     <ChevronDown className="w-4 h-4 ml-1" />
                   </>
                 }
                 isOpen={openDropdown === "account"}
                 onToggle={() => toggleDropdown("account")}
               >
-                <DropdownItem href="/signin">Sign In</DropdownItem>
-                <DropdownItem href="/signup">Create Account</DropdownItem>
-                <DropdownSeparator />
-                <DropdownItem href="/bookings" icon={Calendar}>
-                  My Bookings
-                </DropdownItem>
-                <DropdownItem href="/favorites" icon={Heart}>
-                  Favorites
-                </DropdownItem>
-                <DropdownItem href="/profile" icon={Settings}>
-                  Profile Settings
-                </DropdownItem>
+                {!user ? (
+                  <>
+                    <DropdownItem to="/login">Sign In</DropdownItem>
+                    <DropdownItem to="/register">Create Account</DropdownItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownLabel>Welcome, {user.firstName}!</DropdownLabel>
+                    <DropdownItem to="/profile" icon={User}>
+                      My Profile
+                    </DropdownItem>
+                    <DropdownItem to="/bookings" icon={Calendar}>
+                      My Bookings
+                    </DropdownItem>
+                    <DropdownItem to="/favorites" icon={Heart}>
+                      Favorites
+                    </DropdownItem>
+                    <DropdownItem to="/profile/update" icon={Settings}>
+                      Settings
+                    </DropdownItem>
+                    <DropdownSeparator />
+                    <div 
+                      onClick={handleLogout}
+                      className="flex items-center px-4 py-2 text-red-600 hover:bg-red-50 cursor-pointer"
+                    >
+                      <X className="w-4 h-4 mr-3" />
+                      Logout
+                    </div>
+                  </>
+                )}
               </DropdownMenu>
-              <button
-                onClick={handleLogout}
-                className="rounded-md border border-white py-2 px-4 text-center text-sm transition-all shadow-sm hover:shadow-lg text-white cursor-pointer hover:text-white hover:bg-green-600 hover:border-green-600 focus:text-white focus:bg-slate-800 focus:border-slate-800 active:border-slate-800 active:text-white active:bg-slate-800 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
-              >
-                Logout
-              </button>
+              
+
             </div>
 
             {/* Mobile Menu Button */}
@@ -338,7 +316,7 @@ const BookingNavbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - Updated with user name and proper links */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
@@ -357,6 +335,14 @@ const BookingNavbar = () => {
             </div>
 
             <div className="p-4 space-y-6 overflow-y-auto h-full pb-20">
+              {/* User greeting if logged in */}
+              {user && (
+                <div className="mb-4 pb-4 border-b border-gray-200">
+                  <p className="text-sm text-gray-500">Welcome back,</p>
+                  <p className="font-semibold text-gray-900">{user.firstName} {user.lastName}</p>
+                </div>
+              )}
+            
               {/* Search */}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -367,7 +353,7 @@ const BookingNavbar = () => {
                 />
               </div>
 
-              {/* Navigation Sections */}
+              {/* Navigation Sections - Updated with proper links */}
               <div className="space-y-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
@@ -375,30 +361,20 @@ const BookingNavbar = () => {
                     Accommodation
                   </h3>
                   <div className="space-y-2 ml-6">
-                    <a
-                      href="/hotels"
+                    <Link
+                      to="/stays"
                       className="block text-gray-600 hover:text-gray-900 py-1"
+                    
                     >
-                      Hotels & Resorts
-                    </a>
-                    <a
-                      href="/apartments"
+                      Browse All Stays
+                    </Link>
+                    <Link
+                      to="/stays/create"
                       className="block text-gray-600 hover:text-gray-900 py-1"
+                      
                     >
-                      Apartments
-                    </a>
-                    <a
-                      href="/villas"
-                      className="block text-gray-600 hover:text-gray-900 py-1"
-                    >
-                      Villas & Houses
-                    </a>
-                    <a
-                      href="/unique"
-                      className="block text-gray-600 hover:text-gray-900 py-1"
-                    >
-                      Unique Stays
-                    </a>
+                      List Your Property
+                    </Link>
                   </div>
                 </div>
 
@@ -408,30 +384,20 @@ const BookingNavbar = () => {
                     Car Rental
                   </h3>
                   <div className="space-y-2 ml-6">
-                    <a
-                      href="/cars/economy"
+                    <Link
+                      to="/cars"
                       className="block text-gray-600 hover:text-gray-900 py-1"
+                  
                     >
-                      Economy Cars
-                    </a>
-                    <a
-                      href="/cars/luxury"
+                      Browse All Cars
+                    </Link>
+                    <Link
+                      to="/cars/create"
                       className="block text-gray-600 hover:text-gray-900 py-1"
+                     
                     >
-                      Luxury Vehicles
-                    </a>
-                    <a
-                      href="/cars/suv"
-                      className="block text-gray-600 hover:text-gray-900 py-1"
-                    >
-                      SUVs & Trucks
-                    </a>
-                    <a
-                      href="/cars/electric"
-                      className="block text-gray-600 hover:text-gray-900 py-1"
-                    >
-                      Electric Vehicles
-                    </a>
+                      List Your Vehicle
+                    </Link>
                   </div>
                 </div>
 
@@ -502,18 +468,35 @@ const BookingNavbar = () => {
                 </div>
               </div>
 
-              {/* User Actions */}
+              {/* User Actions - Updated to show different options when logged in */}
               <div className="border-t pt-4 space-y-3">
-                <button className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200">
-                  <User className="w-4 h-4 mr-2" />
-                  Sign In
-                </button>
+                {!user ? (
+                  <Link 
+                    to="/login" 
+                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Sign In
+                  </Link>
+                ) : (
+                  <Link 
+                    to="/profile" 
+                    className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    My Profile
+                  </Link>
+                )}
+                
                 <button
                   onClick={handleLogout}
-                  className="w-full bg-gradient-to-r from-red-600 to-red-600 text-white py-2 rounded-lg font-semibold hover:from-red-700 hover:to-red-700 transition-all duration-300"
+                  className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-2 rounded-lg font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300"
                 >
                   Logout
                 </button>
+                
                 <div className="flex items-center justify-between text-sm text-gray-600">
                   <button className="flex items-center px-3 py-1 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                     <Globe className="w-4 h-4 mr-1" />
