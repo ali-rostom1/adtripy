@@ -23,22 +23,33 @@ class StaysGatewayController extends Controller
     protected function forwardRequest($method, $endpoint, Request $request)
     {
         try {
-            // Get authenticated user
-            $user = Auth::user();
-            
-            // Log the forwarding attempt
-            \Log::info('Forwarding request to stays service', [
-                'method' => $method,
-                'endpoint' => $endpoint,
-                'has_files' => $request->hasFile('media')
-            ]);
-            
-            // Build HTTP request with proper headers
+            // Build HTTP request with basic headers
             $httpRequest = Http::withHeaders([
                 'X-Gateway-Service' => 'auth-service',
-                'X-User-ID' => $user->id,
                 'Accept' => 'application/json'
             ]);
+            
+            // If user is authenticated, add user headers
+            $user = Auth::user();
+            if ($user) {
+                $httpRequest = $httpRequest->withHeaders([
+                    'X-User-ID' => $user->id,
+                    'X-User-Email' => $user->email,
+                ]);
+                
+                // Add user_id to data for POST/PUT requests
+                if (in_array(strtolower($method), ['post', 'put'])) {
+                    $data = $request->all();
+                    $data['user_id'] = $user->id;
+                    $request->merge($data);
+                }
+            }
+            
+            // Add token to forwarded request if present
+            $token = $request->bearerToken();
+            if ($token) {
+                $httpRequest = $httpRequest->withToken($token);
+            }
             
             // Handle file uploads
             if ($request->hasFile('media')) {
@@ -175,5 +186,21 @@ class StaysGatewayController extends Controller
     public function myStays(Request $request)
     {
         return $this->forwardRequest('get', '/my-stays', $request);
+    }
+    
+    /**
+     * Get all stay categories
+     */
+    public function categories(Request $request)
+    {
+        return $this->forwardRequest('get', '/categories', $request);
+    }
+
+    /**
+     * Get all stay amenities
+     */
+    public function amenities(Request $request)
+    {
+        return $this->forwardRequest('get', '/amenities', $request);
     }
 }

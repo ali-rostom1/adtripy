@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
 class GatewayAuthentication
 {
@@ -18,43 +18,44 @@ class GatewayAuthentication
      */
     public function handle(Request $request, Closure $next)
     {
-        // Log the incoming request
-        Log::info('Gateway auth middleware processing request', [
-            'headers' => $request->headers->all(),
-            'user_id' => $request->input('user_id')
-        ]);
+        // Log EVERYTHING for debugging
+        Log::info('Request headers', ['headers' => $request->headers->all()]);
         
-        // Check if coming from gateway or has valid JWT
-        if (!$request->hasHeader('X-Gateway-Service') && !$request->hasHeader('X-User-ID')) {
-            // Fall back to JWT auth if request is direct and not from gateway
-            if ($request->bearerToken()) {
-                // Let the request through to be handled by SyncJwtUser
-                return $next($request);
-            }
+        // Accept requests with either:
+        // 1. X-Gateway-Service and X-User-ID headers (from gateway)
+        // 2. Bearer token (direct API access)
+        
+        // Check for gateway headers first
+        if ($request->hasHeader('X-Gateway-Service') && $request->hasHeader('X-User-ID')) {
+            $userId = $request->header('X-User-ID');
+            $request->merge(['user_id' => $userId]);
             
-            Log::warning('Request not from gateway and no bearer token');
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Unauthorized access'
-            ], 401);
+            Log::info('Gateway auth success', ['user_id' => $userId]);
+            return $next($request);
         }
         
-        // If it's from the gateway, extract user ID from header or request
-        $userId = $request->header('X-User-ID', $request->input('user_id'));
-        
-        if (!$userId) {
-            Log::warning('No user ID provided in gateway request');
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User ID is required' 
-            ], 400);
+        // If no gateway headers, check for JWT token
+        if ($request->bearerToken()) {
+            try {
+                // Validate JWT token
+                $payload = \Tymon\JWTAuth\Facades\JWTAuth::parseToken()->getPayload();
+                $userId = $payload->get('sub');
+                
+                // Attach user_id to request
+                $request->merge(['user_id' => $userId]);
+                
+                Log::info('JWT auth success', ['user_id' => $userId]);
+                return $next($request);
+            } catch (\Exception $e) {
+                Log::error('JWT validation failed: ' . $e->getMessage());
+            }
         }
         
-        // Add user_id to the request so controllers can access it
-        $request->merge(['user_id' => $userId]);
-        
-        Log::info('Gateway authentication successful', ['user_id' => $userId]);
-        
-        return $next($request);
+        // If we get here, authentication failed
+        Log::warning('Authentication failed - no valid method found');
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User authentication failed'
+        ], 401);
     }
 }

@@ -2,6 +2,8 @@
 // filepath: c:\laragon\www\adtripy\services\stays-service\routes\api.php
 
 use App\Http\Controllers\StayController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\AmenityController;
 use Illuminate\Http\Request;
 
 // Don't use Route facade directly
@@ -12,6 +14,10 @@ return function ($router) {
     $router->get('/ping', function() { 
         return response()->json(['message' => 'pong']); 
     });
+    $router->get('/categories', [CategoryController::class, 'index']);
+    $router->get('/categories/{id}', [CategoryController::class, 'show']);
+    $router->get('/amenities', [AmenityController::class, 'index']);
+    $router->get('/amenities/{id}', [AmenityController::class, 'show']);
 
     // Protected routes using the gateway middleware
     $router->middleware('gateway.auth')->group(function($router) {

@@ -1,6 +1,8 @@
-import { useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import { createStay } from "../../../api/stays"
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuthStore } from '../../../store/AuthStore';
+import { useFormDataStore } from '../../../store/FormDataStore';
+import staysClient from '../../../api/staysClient';
 import ClassicNavbar from "../../../components/guest/Nav"
 import {
   ChevronLeft,
@@ -29,12 +31,78 @@ import {
   Wine,
   Anchor,
 } from "lucide-react"
-import { useAuthStore } from '../../../store/AuthStore';
+
+// Add this icon mapping function
+const getIconComponent = (iconName) => {
+  const iconMap = {
+    home: Home,
+    building: Building,
+    castle: Castle,
+    crown: Crown,
+    waves: Waves,
+    gem: Gem,
+    wifi: Wifi,
+    car: Car,
+    dumbbell: Dumbbell,
+    wind: Wind,
+    utensils: Utensils,
+    shield: Shield,
+    bell: Bell,
+    plane: Plane,
+    wine: Wine,
+    anchor: Anchor,
+    // Add more icon mappings as needed
+  };
+  
+  return iconMap[iconName.toLowerCase()] || Building; // Default to Building if icon not found
+};
 
 export default function CreateStayPage() {
-  const { user, token, hasRole } = useAuthStore(); // Get hasRole function
+  const { user, token, hasRole } = useAuthStore();
   const navigate = useNavigate();
   
+  // Add this constant for total steps
+  const totalSteps = 5; // Adjust based on your actual number of stepsx²
+  
+  // Get data from FormDataStore
+  const { 
+    categories, 
+    amenities, 
+    loading: formDataLoading, 
+    error: formDataError,
+    fetchFormData 
+  } = useFormDataStore();
+  
+  // Local state for form inputs
+  const [currentStep, setCurrentStep] = useState(1);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    price_per_night: '',
+    max_guests: 1,
+    bedrooms: 1,
+    bathrooms: 1,
+    category_id: null,
+    address: '',
+    city: '',
+    state: '',
+    country: '',
+    postal_code: '',
+    amenities: [],
+    media: []
+  });
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  
+  // Load data on component mount
+  useEffect(() => {
+    fetchFormData();
+  }, [fetchFormData]);
+  
+  // Auth check effect
   useEffect(() => {
     // Check if user is authenticated
     if (!user || !token) {
@@ -48,64 +116,6 @@ export default function CreateStayPage() {
       return;
     }
   }, [user, token, hasRole, navigate]);
-  
-  const [currentStep, setCurrentStep] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [categories, setCategories] = useState([])
-  const [amenities, setAmenities] = useState([])
-  const [isAnimating, setIsAnimating] = useState(false)
-
-  const totalSteps = 5
-
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    price_per_night: "",
-    max_guests: "",
-    bedrooms: "",
-    bathrooms: "",
-    category_id: "1",
-    // Don't set default host_id - we'll use the current user's ID
-    location_id: "1",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    postal_code: "",
-    latitude: "",
-    longitude: "",
-    amenities: [],
-    mediaFiles: [], // For storing the actual file objects
-    media: [], // For storing URLs or references after upload
-  })
-
-  // Mock data - replace with actual API calls
-  useEffect(() => {
-    setCategories([
-      { id: 1, name: "Luxury Hotel", description: "High-end hotel accommodations", icon: Building },
-      { id: 2, name: "Private Villa", description: "Exclusive villa properties", icon: Home },
-      { id: 3, name: "Penthouse", description: "Premium penthouse suites", icon: Crown },
-      { id: 4, name: "Resort", description: "Resort and spa properties", icon: Waves },
-      { id: 5, name: "Boutique", description: "Unique boutique accommodations", icon: Gem },
-      { id: 6, name: "Historic Estate", description: "Heritage and historic properties", icon: Castle },
-    ])
-
-    setAmenities([
-      { id: 1, name: "High-Speed WiFi", category: "connectivity", icon: Wifi },
-      { id: 2, name: "Air Conditioning", category: "comfort", icon: Wind },
-      { id: 3, name: "Gourmet Kitchen", category: "dining", icon: Utensils },
-      { id: 4, name: "Infinity Pool", category: "recreation", icon: Waves },
-      { id: 5, name: "Private Spa", category: "wellness", icon: Wind },
-      { id: 6, name: "Fitness Center", category: "wellness", icon: Dumbbell },
-      { id: 7, name: "Concierge Service", category: "service", icon: Bell },
-      { id: 8, name: "Valet Parking", category: "transport", icon: Car },
-      { id: 9, name: "Wine Cellar", category: "dining", icon: Wine },
-      { id: 10, name: "Private Beach", category: "recreation", icon: Anchor },
-      { id: 11, name: "Helipad", category: "transport", icon: Plane },
-      { id: 12, name: "Butler Service", category: "service", icon: Shield },
-    ])
-  }, [])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -135,7 +145,7 @@ export default function CreateStayPage() {
     if (files && files.length > 0) {
       setFormData((prev) => ({
         ...prev,
-        mediaFiles: [...prev.mediaFiles, ...files],
+        media: [...prev.media, ...files],
       }))
     }
   }
@@ -143,7 +153,7 @@ export default function CreateStayPage() {
   const removeFile = (indexToRemove) => {
     setFormData((prev) => ({
       ...prev,
-      mediaFiles: prev.mediaFiles.filter((_, index) => index !== indexToRemove),
+      media: prev.media.filter((_, index) => index !== indexToRemove),
     }))
   }
 
@@ -167,89 +177,59 @@ export default function CreateStayPage() {
     }
   }
 
-  // Modify your handleSubmit function to explicitly set host_id and location_id
+  // When submitting the form
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
-
+    e.preventDefault();
+    
     try {
-      // Create a FormData object to handle file uploads
-      const formDataToSubmit = new FormData();
-
-      // Add regular form fields
-      formDataToSubmit.append("title", formData.title);
-      formDataToSubmit.append("description", formData.description);
-      formDataToSubmit.append("price_per_night", formData.price_per_night || 0);
-      formDataToSubmit.append("max_guests", formData.max_guests || 1);
-      formDataToSubmit.append("bedrooms", formData.bedrooms || 1);
-      formDataToSubmit.append("bathrooms", formData.bathrooms || 1);
-      formDataToSubmit.append("category_id", 1);
+      setLoading(true);
       
-      // Make sure to check if we have a user
-      if (!user) {
-        throw new Error('User must be logged in to create a stay');
-      }
+      // Create FormData object for multipart/form-data
+      const formDataToSend = new FormData();
       
-      console.log('Current user:', user);
-      formDataToSubmit.append("host_id", user.id.toString());
-      console.log('Added host_id:', user.id.toString());
+      // Add basic fields
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      formDataToSend.append('price_per_night', formData.price_per_night);
+      formDataToSend.append('max_guests', formData.max_guests);
+      formDataToSend.append('bedrooms', formData.bedrooms);
+      formDataToSend.append('bathrooms', formData.bathrooms);
+      formDataToSend.append('category_id', formData.category_id);
       
-      formDataToSubmit.append("location_id", "1");
-
-      // Location fields - these are still needed for creating the location
-      formDataToSubmit.append("address", formData.address || "");
-      formDataToSubmit.append("city", formData.city || "");
-      formDataToSubmit.append("state", formData.state || "");
-      formDataToSubmit.append("country", formData.country || "");
-      formDataToSubmit.append("postal_code", formData.postal_code || "");
-      formDataToSubmit.append("latitude", formData.latitude || "");
-      formDataToSubmit.append("longitude", formData.longitude || "");
-
-      // Add a single valid amenity
-      formDataToSubmit.append("amenities[0]", "1");
-
-      // Add media files
-      if (formData.mediaFiles && formData.mediaFiles.length > 0) {
-        Array.from(formData.mediaFiles).forEach((file, index) => {
-          formDataToSubmit.append(`media[${index}]`, file);
-        });
-      }
-
-      console.log("Submitting stay data with user ID:", user.id);
+      // Add location fields - first create a location record
+      formDataToSend.append('location_id', '1'); // Temporary default until proper location handling is implemented
+      // Or include full location details
+      formDataToSend.append('address', formData.address);
+      formDataToSend.append('city', formData.city);
+      formDataToSend.append('state', formData.state);
+      formDataToSend.append('country', formData.country);
+      formDataToSend.append('postal_code', formData.postal_code);
       
-      // Log all form data entries for debugging
-      console.log('FormData entries:');
-      for (let pair of formDataToSubmit.entries()) {
-        console.log(pair[0], pair[1]);
-      }
-
-      // Use the updated API call that handles default host_id and amenities
-      const response = await createStay(formDataToSubmit);
-      console.log("Stay created:", response.data);
-      navigate(`/stays/${response.data.id}`);
-    } catch (err) {
-      console.error("Error creating stay:", err);
+      // Add amenities if selected
+      formData.amenities.forEach((amenityId, index) => {
+        formDataToSend.append(`amenities[${index}]`, amenityId);
+      });
       
-      // More detailed error logging
-      if (err.response) {
-        console.error('Response status:', err.response.status);
-        console.error('Response data:', err.response.data);
-      }
-
-      if (err.response?.data?.errors) {
-        const errorMessages = Object.entries(err.response.data.errors)
-          .map(([field, messages]) => `${field}: ${messages.join(", ")}`)
-          .join("\n");
-        setError(errorMessages);
-      } else {
-        setError(err.response?.data?.message || err.message || "Failed to create stay.");
-      }
-    } finally {
+      // Add files if any
+      formData.media.forEach((file, index) => {
+        formDataToSend.append(`media[${index}]`, file);
+      });
+      
+      console.log('Submitting form data with location_id');
+      const response = await staysClient.post('/stays', formDataToSend);
+      
       setLoading(false);
+      navigate('/stays/my-stays');
+      
+    } catch (error) {
+      setLoading(false);
+      console.error('Error creating stay:', error);
+      
+      // Handle the error appropriately
+      setError(error.response?.data?.message || 'Failed to create stay. Please try again.');
     }
-  }
-
+  };
+  
   const steps = [
     { number: 1, title: "Type", icon: Home },
     { number: 2, title: "Details", icon: Star },
@@ -281,7 +261,8 @@ export default function CreateStayPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {categories.map((category, index) => {
-                const IconComponent = category.icon
+                // Use the mapping function instead of directly using category.icon
+                const IconComponent = getIconComponent(category.icon || 'building');
                 return (
                   <button
                     key={category.id}
@@ -549,7 +530,8 @@ export default function CreateStayPage() {
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {categoryAmenities.map((amenity) => {
-                      const IconComponent = amenity.icon
+                      // Use the same icon mapping function here
+                      const IconComponent = getIconComponent(amenity.icon || 'building');
                       return (
                         <label
                           key={amenity.id}
@@ -627,11 +609,11 @@ export default function CreateStayPage() {
                 </div>
                 
                 {/* Preview uploaded images */}
-                {formData.mediaFiles && formData.mediaFiles.length > 0 && (
+                {formData.media && formData.media.length > 0 && (
                   <div className="mt-6">
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">Selected Images ({formData.mediaFiles.length})</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-3">Selected Images ({formData.media.length})</h4>
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                      {Array.from(formData.mediaFiles).map((file, index) => (
+                      {Array.from(formData.media).map((file, index) => (
                         <div key={index} className="relative group">
                           <img 
                             src={URL.createObjectURL(file)} 
@@ -826,13 +808,6 @@ export default function CreateStayPage() {
       </div>
     </>
   )
-}
-
-// Add this to your createStay function
-const token = useAuthStore.getState().token;
-if (token) {
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  console.log('Token payload:', payload);
 }
 
 

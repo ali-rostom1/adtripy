@@ -20,15 +20,15 @@ class Stay extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'host_id',
         'title',
         'description',
         'price_per_night',
         'max_guests',
         'bedrooms',
         'bathrooms',
-        'category_id',
-        'host_id',
         'location_id',
+        'category_id'
     ];
 
     /**
@@ -72,7 +72,7 @@ class Stay extends Model
      */
     public function amenities(): BelongsToMany
     {
-        return $this->belongsToMany(Amenity::class);
+        return $this->belongsToMany(Amenity::class, 'stay_amenity');
     }
 
     /**

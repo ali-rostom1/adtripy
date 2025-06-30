@@ -112,7 +112,14 @@ Route::middleware('auth:api')->group(function() {
         Route::delete('/{id}', [StaysGatewayController::class, 'destroy']);
         Route::get('/my', [StaysGatewayController::class, 'myStays']);
     });
+
+    Route::get('/v1/categories', [StaysGatewayController::class, 'getCategories']);
+    Route::get('/v1/amenities', [StaysGatewayController::class, 'getAmenities']);
 });
+
+// Public routes (don't require authentication)
+Route::get('/v1/categories', [StaysGatewayController::class, 'categories']);
+Route::get('/v1/amenities', [StaysGatewayController::class, 'amenities']);
 
 
 
