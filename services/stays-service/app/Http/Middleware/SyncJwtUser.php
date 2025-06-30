@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
@@ -20,37 +19,34 @@ class SyncJwtUser
     public function handle(Request $request, Closure $next)
     {
         try {
-            $token = JWTAuth::parseToken();
-            $payload = $token->getPayload();
-            $userId = $payload->get('sub');
+            Log::info('SyncJwtUser middleware processing request');
             
-            Log::info('SyncJwtUser processing token with user ID: ' . $userId);
-            
-            // Try to find user first
-            $user = User::find($userId);
-            
-            // If no user exists, create one from the token
-            if (!$user) {
-                $user = new User();
-                $user->id = $userId;
-                $user->email = $payload->get('email', $userId . '@example.com');
-                $user->firstName = $payload->get('firstName', 'Unknown');
-                $user->lastName = $payload->get('lastName', 'User');
-                $user->save();
-                
-                Log::info('Created new user from JWT token', ['id' => $userId]);
+            if (!$request->bearerToken()) {
+                Log::warning('No bearer token found in request');
+                return response()->json(['error' => 'No authentication token provided'], 401);
             }
             
-            // Force authenticate this user
-            auth()->login($user);
+            // Parse token and get user ID
+            $payload = JWTAuth::parseToken()->getPayload();
+            $userId = $payload->get('sub');
             
-            Log::info('User authenticated', ['id' => $userId]);
+            Log::info('JWT token parsed successfully', ['user_id' => $userId]);
+            
+            // DON'T try to find or create a user - just attach the ID to the request
+            $request->merge(['user_id' => $userId]);
+            
+            Log::info('JWT token validated, user_id attached to request', ['user_id' => $userId]);
             
             return $next($request);
-            
         } catch (\Exception $e) {
-            Log::error('Error in SyncJwtUser middleware: ' . $e->getMessage());
-            return response()->json(['error' => $e->getMessage()], 401);
+            Log::error('JWT authentication error: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return response()->json([
+                'error' => $e->getMessage(), 
+                'detail' => 'Authentication failed in SyncJwtUser middleware'
+            ], 401);
         }
     }
 }

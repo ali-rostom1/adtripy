@@ -14,14 +14,21 @@ return new class extends Migration {
         if (!Schema::hasTable('stays')) {
             Schema::create('stays', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('host_id')->comment('User ID from auth service');
+                $table->uuid('host_id');
                 $table->string('title');
                 $table->text('description')->nullable();
                 $table->decimal('price_per_night', 10, 2);
                 $table->integer('max_guests');
+                $table->integer('bedrooms');
+                $table->integer('bathrooms');
                 $table->foreignId('location_id')->constrained();
                 $table->foreignId('category_id')->constrained();
                 $table->timestamps();
+                
+                // Foreign key to users table
+                $table->foreign('host_id')
+                      ->references('id')
+                      ->on('users');
             });
         }
 
